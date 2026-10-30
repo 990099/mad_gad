@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Food Scanner PRO</title>
+  
+  <!-- SDK Мессенджера MAX -->
+  <script src="https://st.max.ru/js/max-web-app.js"></script>
+  <!-- Fallback SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <style>
+    body {
+      background-color: var(--tg-theme-bg-color, #f8fafc);
+      color: var(--tg-theme-text-color, #0f172a);
+      -webkit-tap-highlight-color: transparent;
+    }
+    #barcodeReader video {
+      object-fit: cover !important;
+      border-radius: 1.5rem !important;
+    }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans pb-24">
+
+  <!-- ОКНО СКАНЕРА ШТРИХКОДОВ -->
+  <div id="barcodeModal" style="display: none;" class="fixed inset-0 z-50 bg-black flex flex-col justify-between p-4">
+    <div class="w-full flex justify-between items-center text-white pt-2 px-2 z-20">
+      <span class="text-xs font-bold tracking-wider bg-black/60 px-3 py-1.5 rounded-full backdrop-blur-md">⚡️ Поместите штрихкод в рамку</span>
+      <button type="button" onclick="stopBarcodeScanner()" class="w-10 h-10 bg-white/20 active:bg-white/40 rounded-full flex items-center justify-center text-white font-bold text-lg backdrop-blur-md">✕</button>
+    </div>
+    <div class="relative w-full flex-1 flex items-center justify-center my-2 bg-neutral-900 rounded-3xl overflow-hidden">
+      <div id="barcodeReader" class="w-full h-full"></div>
+    </div>
+    <div class="w-full pb-4 flex justify-center z-20">
+      <button type="button" onclick="openManualInput()" class="px-5 py-2.5 bg-white/20 text-white font-bold text-xs rounded-full backdrop-blur-md active:scale-95 transition">⌨️ Ввести цифры вручную</button>
+    </div>
+  </div>
+
+  <!-- ОКНО КАМЕРЫ ДЛЯ ФОТО -->
+  <div id="cameraModal" style="display: none;" class="fixed inset-0 z-50 bg-black flex-col justify-between p-4">
+    <div class="w-full flex justify-between items-center text-white pt-2 px-2 z-20">
+      <span class="text-xs font-bold tracking-wider bg-black/60 px-3 py-1.5 rounded-full backdrop-blur-md">📸 Наведите на состав</span>
+      <button type="button" onclick="stopLiveCamera()" class="w-10 h-10 bg-white/20 active:bg-white/40 rounded-full flex items-center justify-center text-white font-bold text-lg backdrop-blur-md">✕</button>
+    </div>
+    <div class="relative w-full flex-1 flex items-center justify-center my-2 bg-neutral-900 rounded-2xl overflow-hidden">
+      <video id="cameraStream" playsinline autoplay muted class="w-full h-full object-cover"></video>
+      <div class="absolute inset-8 border-2 border-emerald-400/80 rounded-xl pointer-events-none"></div>
+    </div>
+    <div class="w-full pb-6 flex flex-col items-center space-y-3 z-20">
+      <button type="button" onclick="captureSnapshot()" class="w-20 h-20 rounded-full border-4 border-white flex items-center justify-center bg-white/20 active:scale-95 transition"><div class="w-16 h-16 bg-white rounded-full shadow-lg"></div></button>
+      <button type="button" onclick="fallbackToNativeCamera()" class="text-[11px] text-white/70 underline py-1">Открыть системную камеру</button>
+    </div>
+  </div>
+
+  <!-- ШАПКА -->
+  <header class="p-4 flex items-center justify-between border-b border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm sticky top-0 z-40">
+    <div class="flex items-center space-x-3">
+      <div id="userAvatar" class="w-10 h-10 rounded-full bg-emerald-500 text-white font-bold flex items-center justify-center text-sm shadow">U</div>
+      <div>
+        <h1 id="userName" class="text-sm font-bold leading-tight">Пользователь</h1>
+        <span id="limitBadge" class="inline-flex items-center text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-2.5 py-0.5 rounded-full mt-0.5">📊 Осталось: проверка...</span>
+      </div>
+    </div>
+    <button type="button" onclick="showTab('pro')" class="px-3.5 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold rounded-full shadow hover:opacity-95 active:scale-95 transition">⭐️ PRO</button>
+  </header>
+
+  <!-- ВКЛАДКА 1: СКАНЕР -->
+  <div id="tab-scanner" style="display: block;" class="p-4 max-w-md mx-auto w-full space-y-4">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl p-3 shadow-sm border border-slate-200/60 dark:border-slate-800 space-y-2">
+      <div class="flex justify-between items-center px-1">
+        <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Кому сканируем:</span>
+        <button type="button" onclick="showTab('family')" class="text-[11px] text-emerald-500 font-bold hover:underline">+ Настроить семью</button>
+      </div>
+      <div id="scannerFamilyChips" class="flex items-center space-x-2 overflow-x-auto hide-scrollbar py-1"></div>
+    </div>
+
+    <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 text-center shadow-sm border border-slate-200/60 dark:border-slate-800 flex flex-col items-center justify-center space-y-4">
+      <div class="w-16 h-16 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-500 rounded-full flex items-center justify-center text-3xl">🔍</div>
+      <div>
+        <h2 class="text-base font-bold">Проверка состава</h2>
+        <p id="scanningForLabel" class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold mt-0.5">Проверяем для: 👤 Я</p>
+      </div>
+      <img id="photoPreview" style="display: none;" class="w-full max-h-56 object-contain rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm" />
+      <div id="loader" style="display: none;" class="flex-col items-center py-3 space-y-2">
+        <div class="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+        <p id="loaderText" class="text-xs font-bold text-emerald-600 dark:text-emerald-400 animate-pulse">Обработка...</p>
+      </div>
+      <input type="file" id="nativeCameraInput" accept="image/*" capture="camera" style="display: none;" onchange="processFilePhoto(event)">
+      <input type="file" id="galleryInput" accept="image/*" style="display: none;" onchange="processFilePhoto(event)">
+      <button type="button" onclick="startBarcodeScanner()" class="w-full py-4 bg-gradient-to-r from-emerald-500 to-teal-600 active:scale-95 text-white font-extrabold text-sm rounded-2xl shadow-lg shadow-emerald-500/25 flex items-center justify-center space-x-2 transition cursor-pointer">
+        <span class="text-xl">⚡️</span><span>Сканировать штрихкод</span>
+      </button>
+      <div class="grid grid-cols-2 gap-3 w-full pt-1">
+        <button type="button" onclick="startLiveCamera()" class="py-3.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-xs rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-center space-x-1.5 transition"><span>📸 Фото состава</span></button>
+        <button type="button" onclick="triggerGallery()" class="py-3.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-xs rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-center space-x-1.5 transition"><span>🖼 Из галереи</span></button>
+      </div>
+    </div>
+
+    <!-- Карточка результата -->
+    <div id="resultCard" style="display: none;" class="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-200/60 dark:border-slate-800 space-y-3">
+      <div class="flex items-center justify-between border-b pb-2.5 border-slate-100 dark:border-slate-800">
+        <h3 id="productTitle" class="text-xs font-bold text-slate-400 uppercase tracking-wider">Вердикт безопасности</h3>
+        <span id="badgeVerdict" class="text-xs px-2.5 py-0.5 rounded-full font-bold"></span>
+      </div>
+      <div id="resultText" class="text-xs space-y-2 leading-relaxed text-slate-800 dark:text-slate-200 whitespace-pre-line font-medium"></div>
+      
+      <!-- Блок действия при устаревшем товаре -->
+      <div id="staleActionBlock" style="display: none;" class="pt-2 border-t border-slate-100 dark:border-slate-800">
+        <button type="button" onclick="startLiveCamera()" class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow active:scale-95 transition">
+          📸 Сфотографировать свежую этикетку
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ВКЛАДКА 2: СЕМЬЯ (СПИСОК И РЕДАКТОР) -->
+  <div id="tab-family" style="display: none;" class="p-4 max-w-md mx-auto w-full space-y-4">
+    <!-- Список членов семьи -->
+    <div id="familyListView" class="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-200/60 dark:border-slate-800 space-y-4">
+      <div class="flex justify-between items-center">
+        <div><h2 class="text-base font-bold">👨‍👩‍👧 Семья и профили</h2><p class="text-xs text-slate-400">Настройте здоровье для каждого</p></div>
+        <button type="button" onclick="addNewMemberPrompt()" class="px-3.5 py-1.5 bg-emerald-500 text-white font-bold text-xs rounded-xl shadow">+ Добавить</button>
+      </div>
+      <div id="familyMembersList" class="space-y-2.5 pt-1"></div>
+    </div>
+
+    <!-- Редактор анкеты -->
+    <div id="familyEditView" style="display: none;" class="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-200/60 dark:border-slate-800 space-y-4">
+      <div class="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-slate-800">
+        <div class="flex items-center space-x-2">
+          <button type="button" onclick="closeEditMemberView()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 font-bold text-base">←</button>
+          <div>
+            <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Анкета для:</span>
+            <h2 id="currentEditingMemberTitle" class="text-sm font-black text-emerald-600">👤 Я</h2>
+          </div>
+        </div>
+        <button type="button" onclick="closeEditMemberView()" class="text-xs text-slate-400 hover:text-emerald-500 font-bold">К списку</button>
+      </div>
+
+      <div class="p-3 rounded-xl bg-emerald-50/50 border border-emerald-100 dark:border-emerald-900/40 flex items-center justify-between">
+        <label class="text-xs font-bold text-slate-700 dark:text-slate-200">🎂 Возраст человека:</label>
+        <div class="flex items-center space-x-1.5">
+          <input type="number" id="txt_age" placeholder="25" min="0" max="110" class="w-16 text-center text-xs font-bold p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+          <span class="text-xs font-bold text-slate-500">лет</span>
+        </div>
+      </div>
+
+      <div class="space-y-2">
+        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Частые противопоказания:</span>
+        <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 cursor-pointer"><div><p class="text-xs font-bold">🩸 Сахарный диабет</p></div><input type="checkbox" id="chk_diabetes" class="w-5 h-5 accent-emerald-500"></label>
+        <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 cursor-pointer"><div><p class="text-xs font-bold">🫀 Давление / Сердце (50+)</p></div><input type="checkbox" id="chk_pressure" class="w-5 h-5 accent-emerald-500"></label>
+        <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 cursor-pointer"><div><p class="text-xs font-bold">🍋 Гастрит / Язва</p></div><input type="checkbox" id="chk_gastritis" class="w-5 h-5 accent-emerald-500"></label>
+        <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 cursor-pointer"><div><p class="text-xs font-bold">🥩 Подагра</p></div><input type="checkbox" id="chk_gout" class="w-5 h-5 accent-emerald-500"></label>
+        <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 cursor-pointer"><div><p class="text-xs font-bold">👶 Детский режим питания</p></div><input type="checkbox" id="chk_kids" class="w-5 h-5 accent-emerald-500"></label>
+      </div>
+
+      <div class="space-y-2 pt-1">
+        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Диеты:</span>
+        <div class="grid grid-cols-2 gap-2">
+          <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 cursor-pointer"><span class="text-xs font-bold">🌾 Без глютена</span><input type="checkbox" id="chk_gluten" class="w-4 h-4 accent-emerald-500"></label>
+          <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 cursor-pointer"><span class="text-xs font-bold">🥛 Без лактозы</span><input type="checkbox" id="chk_lactose" class="w-4 h-4 accent-emerald-500"></label>
+          <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 cursor-pointer"><span class="text-xs font-bold">🌱 Веган</span><input type="checkbox" id="chk_vegan" class="w-4 h-4 accent-emerald-500"></label>
+          <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 cursor-pointer"><span class="text-xs font-bold">🌙 Халяль</span><input type="checkbox" id="chk_halal" class="w-4 h-4 accent-emerald-500"></label>
+        </div>
+      </div>
+
+      <div class="space-y-3 pt-2">
+        <div><label class="text-xs font-bold block mb-1">🌰 Свои аллергены:</label><input type="text" id="txt_allergens" placeholder="арахис, соя..." class="w-full text-xs p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"></div>
+        <div><label class="text-xs font-bold block mb-1">🩺 Другие болезни:</label><input type="text" id="txt_custom_diseases" placeholder="язва..." class="w-full text-xs p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"></div>
+      </div>
+
+      <div class="space-y-2 pt-2">
+        <button type="button" id="btnSaveProfile" onclick="saveActiveMemberProfile()" class="w-full py-3.5 bg-emerald-500 text-white font-bold text-xs rounded-xl shadow active:scale-98 transition">💾 Сохранить в базу Supabase</button>
+        
+        <!-- КНОПКА УДАЛЕНИЯ ВНУТРИ АНКЕТЫ -->
+        <div id="deleteMemberBtnContainer" style="display: none;">
+          <button type="button" onclick="removeMember(currentEditingMember)" class="w-full py-2.5 bg-red-50 hover:bg-red-100 text-red-600 font-bold text-xs rounded-xl border border-red-200 active:scale-95 transition">
+            🗑 Удалить этот профиль
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ВКЛАДКА 3: О ПРИЛОЖЕНИИ / ОБУЧЕНИЕ -->
+  <div id="tab-about" style="display: none;" class="p-4 max-w-md mx-auto w-full space-y-4">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-200/60 space-y-4 text-xs leading-relaxed">
+      <div class="text-center pb-2 border-b border-slate-100 dark:border-slate-800">
+        <span class="text-3xl">🛡️</span>
+        <h2 class="text-base font-black mt-1">О проекте Food Scanner</h2>
+        <p class="text-slate-400 text-[11px]">Ваш личный эксперт безопасности у полки магазина</p>
+      </div>
+      <div>
+        <h3 class="font-bold text-emerald-600 dark:text-emerald-400 text-sm mb-1">📸 Почему фото состава — самый точный способ?</h3>
+        <p class="text-slate-600 dark:text-slate-300">
+          Штрихкод — это всего лишь набор цифр на упаковке. Сама по себе цифра не знает, что производитель втихую изменил рецептуру или что в вашем регионе состав партии отличается. <b>Самый точный, безупречный и надежный результат всегда дает фотография состава</b> на обороте пачки — искусственный интеллект читает актуальный текст в реальном времени.
+        </p>
+      </div>
+      <div>
+        <h3 class="font-bold text-emerald-600 dark:text-emerald-400 text-sm mb-1">⚡️ Зачем тогда нужен штрихкод?</h3>
+        <p class="text-slate-600 dark:text-slate-300">
+          Штрихкод создан для вашего удобства, чтобы проверять популярные товары за полсекунды. Но если вы покупаете новинку или сомневаетесь — делайте фото состава.
+        </p>
+      </div>
+      <div>
+        <h3 class="font-bold text-emerald-600 dark:text-emerald-400 text-sm mb-1">🎯 Наши главные ценности:</h3>
+        <ul class="list-disc pl-4 space-y-1 text-slate-600 dark:text-slate-300">
+          <li><b>Защита детей:</b> поиск скрытых красителей (СДВГ/гиперактивность) и сахара.</li>
+          <li><b>Контроль диабета:</b> выявление мальтодекстрина, патоки и сиропов.</li>
+          <li><b>Защита семьи (50+ лет):</b> контроль избытка соли и фосфатов (давление и кости).</li>
+        </ul>
+      </div>
+      <div class="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 text-[11px] border border-amber-200/60 dark:border-amber-800/50 space-y-1">
+        <p class="font-bold flex items-center gap-1"><span>⚠️</span> Важное уведомление (Дисклеймер):</p>
+        <p class="opacity-90 leading-relaxed">
+          Сервис носит исключительно информационный и <b>рекомендательный характер</b>. Он не является медицинским диагнозом, назначением или официальной рекомендацией врача. При тяжелых формах аллергий всегда лично проверяйте текст на упаковке.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ВКЛАДКА 4: PRO -->
+  <div id="tab-pro" style="display: none;" class="p-4 max-w-md mx-auto w-full space-y-4">
+    <div class="bg-gradient-to-br from-amber-500 to-orange-600 rounded-3xl p-6 text-white text-center shadow-lg space-y-4">
+      <div class="text-4xl">👑</div>
+      <div><h2 class="text-lg font-black">PRO-безлимит</h2><p class="text-xs opacity-90 mt-1">Проверяйте составы для всей семьи без лимитов</p></div>
+      <div class="space-y-2 text-left pt-2">
+        <button type="button" onclick="buyProPlan(30)" class="w-full p-3 bg-white rounded-xl flex justify-between text-xs font-bold text-orange-600 active:scale-95 transition"><span>1 месяц</span><span>150 ⭐</span></button>
+        <button type="button" onclick="buyProPlan(60)" class="w-full p-3 bg-white rounded-xl flex justify-between text-xs font-bold text-orange-600 active:scale-95 transition"><span>2 месяца (-10%)</span><span>270 ⭐</span></button>
+        <button type="button" onclick="buyProPlan(90)" class="w-full p-3 bg-white rounded-xl flex justify-between text-xs font-bold text-orange-600 active:scale-95 transition"><span>3 месяца (-15%)</span><span>380 ⭐</span></button>
+        <button type="button" onclick="buyProPlan(180)" class="w-full p-3 bg-white rounded-xl flex justify-between text-xs font-bold text-orange-600 border-2 border-yellow-300 active:scale-95 transition"><span>6 месяцев (Семья) (-25%)</span><span>675 ⭐</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- НИЖНЕЕ МЕНЮ ИЗ 4 КНОПОК -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex justify-around py-2 max-w-md mx-auto z-40">
+    <button type="button" onclick="showTab('scanner')" id="btn-scanner" class="flex flex-col items-center text-emerald-500 font-bold text-[10px]"><span class="text-lg">📸</span><span>Сканер</span></button>
+    <button type="button" onclick="showTab('family')" id="btn-family" class="flex flex-col items-center text-slate-400 font-medium text-[10px]"><span class="text-lg">👨‍👩‍👧</span><span>Семья</span></button>
+    <button type="button" onclick="showTab('about')" id="btn-about" class="flex flex-col items-center text-slate-400 font-medium text-[10px]"><span class="text-lg">ℹ️</span><span>О приложении</span></button>
+    <button type="button" onclick="showTab('pro')" id="btn-pro" class="flex flex-col items-center text-slate-400 font-medium text-[10px]"><span class="text-lg">⭐️</span><span>PRO</span></button>
+  </nav>
+
+  <script>
+    const N8N_WEBHOOK_URL = "https://zloy4elovek0.app.n8n.cloud/webhook/scan";
+    
+    const tg = window.Telegram?.WebApp;
+    const maxApp = window.max || window.MAXApp;
+    
+    let urlParams = new URLSearchParams(window.location.search);
+    const userId = tg?.initDataUnsafe?.user?.id || urlParams.get('max_user_id') || urlParams.get('user_id') || 5216250196;
+
+    let currentStream = null;
+    let html5QrScanner = null;
+    let familyMembers = ["Я"]; 
+    let activeScannerTarget = "Я"; 
+    let currentEditingMember = "Я"; 
+
+    function showTab(name) {
+      ['scanner', 'family', 'about', 'pro'].forEach(t => {
+        const el = document.getElementById('tab-' + t);
+        if(el) el.style.display = 'none';
+        const btn = document.getElementById('btn-' + t);
+        if(btn) btn.className = 'flex flex-col items-center text-slate-400 font-medium text-[10px]';
+      });
+      document.getElementById('tab-' + name).style.display = 'block';
+      document.getElementById('btn-' + name).className = 'flex flex-col items-center text-emerald-500 font-bold text-[10px]';
+      if (name === 'family') {
+        document.getElementById('familyListView').style.display = 'block';
+        document.getElementById('familyEditView').style.display = 'none';
+        renderFamilyTabList();
+      }
+      if (name === 'scanner') renderScannerChips();
+    }
+
+    try { 
+      if (tg) { tg.expand(); tg.ready(); }
+      if (maxApp?.ready) { maxApp.ready(); }
+    } catch(e) {}
+
+    loadFamilyMembers();
+    renderScannerChips();
+    fetchRealLimit();
+
+    async function fetchRealLimit() {
+      try {
+        const res = await fetch(N8N_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: "get_limits", chat_id: userId })
+        });
+        const data = await res.json();
+        if (data.checks_left !== undefined) {
+          updateLimitBadge(data.checks_left);
+        }
+      } catch(e) {
+        document.getElementById('limitBadge').innerText = "📊 Осталось: 5 из 5";
+      }
+    }
+
+    function loadFamilyMembers() {
+      try {
+        const saved = JSON.parse(localStorage.getItem('family_members_' + userId));
+        familyMembers = (saved && saved.length > 0) ? saved : ["Я"];
+      } catch(e) { familyMembers = ["Я"]; }
+    }
+
+    function saveFamilyMembers() {
+      localStorage.setItem('family_members_' + userId, JSON.stringify(familyMembers));
+      renderScannerChips();
+      renderFamilyTabList();
+    }
+
+    function addNewMemberPrompt() {
+      const name = prompt("Введите имя (например: Муж, Сын, Мама):");
+      if (name && name.trim()) {
+        const trimmed = name.trim();
+        if (!familyMembers.includes(trimmed)) {
+          familyMembers.push(trimmed);
+          saveFamilyMembers();
+          editMemberProfile(trimmed);
+        }
+      }
+    }
+
+    // УДАЛЕНИЕ ЧЛЕНА СЕМЬИ (С ЗАЩИТОЙ "Я")
+    function removeMember(name, event) {
+      if (event) event.stopPropagation();
+      if (name === "Я") { 
+        alert("Профиль «Я» удалить нельзя!"); 
+        return; 
+      }
+      if (confirm(`Вы уверены, что хотите удалить профиль «${name}»?`)) {
+        familyMembers = familyMembers.filter(m => m !== name);
+        localStorage.removeItem(`profile_${userId}_${name}`);
+        if (activeScannerTarget === name) activeScannerTarget = "Я";
+        if (currentEditingMember === name) currentEditingMember = "Я";
+        saveFamilyMembers();
+        closeEditMemberView();
+        
+        // Очищаем в Supabase
+        fetch(N8N_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: "save_profile", chat_id: userId, member_name: name, allergens: "", diseases: "" })
+        }).catch(() => {});
+      }
+    }
+
+    function renderScannerChips() {
+      const container = document.getElementById('scannerFamilyChips');
+      if(!container) return;
+      container.innerHTML = "";
+      familyMembers.forEach(m => {
+        const btn = document.createElement('button');
+        btn.type = "button";
+        const isActive = activeScannerTarget === m;
+        btn.className = isActive ? "px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-500 text-white shadow" : "px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200";
+        btn.innerText = (m === "Я" ? "👤 " : "👥 ") + m;
+        btn.onclick = () => { activeScannerTarget = m; renderScannerChips(); document.getElementById('scanningForLabel').innerText = "Проверяем для: " + (m === "Я" ? "👤 Я" : m); };
+        container.appendChild(btn);
+      });
+      if (familyMembers.length > 1) {
+        const allBtn = document.createElement('button');
+        allBtn.type = "button";
+        const isAllActive = activeScannerTarget === "ALL";
+        allBtn.className = isAllActive ? "px-3 py-1.5 rounded-full text-xs font-black bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow" : "px-3 py-1.5 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200/50";
+        allBtn.innerText = "👨‍👩‍👧 Вся семья";
+        allBtn.onclick = () => { activeScannerTarget = "ALL"; renderScannerChips(); document.getElementById('scanningForLabel').innerText = "Проверяем для: 👨‍👩‍👧 ВСЕЙ СЕМЬИ СРАЗУ"; };
+        container.appendChild(allBtn);
+      }
+    }
+
+    // ОТРИСОВКА СПИСКА СЕМЬИ С КНОПКОЙ УДАЛЕНИЯ 🗑
+    function renderFamilyTabList() {
+      const container = document.getElementById('familyMembersList');
+      if(!container) return;
+      container.innerHTML = "";
+      familyMembers.forEach(m => {
+        const card = document.createElement('div');
+        card.className = "flex items-center justify-between p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700 cursor-pointer";
+        card.onclick = () => editMemberProfile(m);
+        const p = getSavedMemberProfile(m);
+        card.innerHTML = `
+          <div class="flex items-center space-x-3">
+            <div class="w-9 h-9 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-600 font-bold flex items-center justify-center text-sm">${m === "Я" ? "👤" : "👥"}</div>
+            <div><p class="text-xs font-bold">${m}</p><p class="text-[10px] text-slate-400">${p.age ? p.age + " лет" : "Возраст не указан"}</p></div>
+          </div>
+          <div class="flex items-center space-x-1">
+            <span class="text-xs text-emerald-500 font-bold p-1">Настроить →</span>
+            ${m !== "Я" ? `<button type="button" onclick="removeMember('${m}', event)" class="p-2 text-red-500 hover:text-red-700 active:scale-90 transition text-sm" title="Удалить">🗑</button>` : ""}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function editMemberProfile(name) {
+      currentEditingMember = name;
+      loadMemberProfileToUI(name);
+      document.getElementById('familyListView').style.display = 'none';
+      document.getElementById('familyEditView').style.display = 'block';
+      // Показываем кнопку удаления только если это не «Я»
+      document.getElementById('deleteMemberBtnContainer').style.display = (name === "Я") ? 'none' : 'block';
+    }
+
+    function closeEditMemberView() {
+      document.getElementById('familyEditView').style.display = 'none';
+      document.getElementById('familyListView').style.display = 'block';
+      renderFamilyTabList();
+    }
+
+    function getSavedMemberProfile(name) {
+      try { return JSON.parse(localStorage.getItem(`profile_${userId}_${name}`)) || {}; } catch(e) { return {}; }
+    }
+    
+    function loadMemberProfileToUI(name) {
+      document.getElementById('currentEditingMemberTitle').innerText = (name === "Я" ? "👤 Я (Основной)" : "👥 " + name);
+      const p = getSavedMemberProfile(name);
+      document.getElementById('txt_age').value = p.age || '';
+      document.getElementById('chk_diabetes').checked = !!p.diabetes;
+      document.getElementById('chk_pressure').checked = !!p.pressure;
+      document.getElementById('chk_gastritis').checked = !!p.gastritis;
+      document.getElementById('chk_gout').checked = !!p.gout;
+      document.getElementById('chk_kids').checked = !!p.kids;
+      document.getElementById('chk_gluten').checked = !!p.gluten;
+      document.getElementById('chk_lactose').checked = !!p.lactose;
+      document.getElementById('chk_vegan').checked = !!p.vegan;
+      document.getElementById('chk_halal').checked = !!p.halal;
+      document.getElementById('txt_allergens').value = p.allergens || '';
+      document.getElementById('txt_custom_diseases').value = p.custom_diseases || '';
+    }
+
+    async function saveActiveMemberProfile() {
+      const btn = document.getElementById('btnSaveProfile');
+      btn.innerText = "⏳ Сохраняю в Supabase..."; btn.disabled = true;
+      const profileData = {
+        age: document.getElementById('txt_age').value.trim(),
+        diabetes: document.getElementById('chk_diabetes').checked,
+        pressure: document.getElementById('chk_pressure').checked,
+        gastritis: document.getElementById('chk_gastritis').checked,
+        gout: document.getElementById('chk_gout').checked,
+        kids: document.getElementById('chk_kids').checked,
+        gluten: document.getElementById('chk_gluten').checked,
+        lactose: document.getElementById('chk_lactose').checked,
+        vegan: document.getElementById('chk_vegan').checked,
+        halal: document.getElementById('chk_halal').checked,
+        allergens: document.getElementById('txt_allergens').value.trim(),
+        custom_diseases: document.getElementById('txt_custom_diseases').value.trim()
+      };
+      localStorage.setItem(`profile_${userId}_${currentEditingMember}`, JSON.stringify(profileData));
+      try {
+        await fetch(N8N_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: "save_profile", chat_id: userId, member_name: currentEditingMember, allergens: profileData.allergens, diseases: JSON.stringify(profileData) })
+        });
+        btn.innerText = "💾 Сохранить в базу"; btn.disabled = false;
+        alert(`✅ Профиль «${currentEditingMember}» сохранён!`);
+        closeEditMemberView();
+      } catch(e) { btn.innerText = "💾 Сохранить в базу"; btn.disabled = false; alert("Сохранено локально."); }
+    }
+
+    function buildHealthCommentForAI() {
+      if (activeScannerTarget === "ALL") {
+        const familyConstraints = [];
+        familyMembers.forEach(m => {
+          const p = getSavedMemberProfile(m);
+          familyConstraints.push(`${m} (возраст: ${p.age || 'не указан'}, диабет:${p.diabetes}, аллергии:${p.allergens || 'нет'})`);
+        });
+        return `ПРОВЕРКА ДЛЯ ВСЕЙ СЕМЬИ СРАЗУ. Статусы: 🟢 ПРИГОДНО, 🟡 НЕЙТРАЛЬНО, 🔴 ОПАСНО. Семья: ${familyConstraints.join("; ")}`;
+      }
+      const p = getSavedMemberProfile(activeScannerTarget);
+      return `Проверяем для: ${activeScannerTarget}. Возраст: ${p.age || 'не указан'}. Диабет:${p.diabetes}, Давление:${p.pressure}, Гастрит:${p.gastritis}, Детское:${p.kids}, Аллергены:${p.allergens || 'нет'}. Вердикт строго: 🟢 ПРИГОДНО, 🟡 НЕЙТРАЛЬНО, 🔴 ОПАСНО.`;
+    }
+
+    async function sendBarcodeToN8n(barcode) {
+      document.getElementById('loaderText').innerText = "Ищу товар...";
+      document.getElementById('loader').style.display = 'flex';
+      document.getElementById('resultCard').style.display = 'none';
+      try {
+        const res = await fetch(N8N_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ barcode: barcode, chat_id: userId, comment: buildHealthCommentForAI() })
+        });
+        handleServerResponse(await res.json());
+      } catch(e) { showResult("⚠️ Ошибка сети", "Сбой подключения к серверу."); }
+    }
+
+    async function sendPhotoToN8n(base64Image) {
+      document.getElementById('loaderText').innerText = "ИИ читает состав...";
+      document.getElementById('loader').style.display = 'flex';
+      document.getElementById('resultCard').style.display = 'none';
+      try {
+        const res = await fetch(N8N_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image: base64Image, chat_id: userId, comment: buildHealthCommentForAI() })
+        });
+        handleServerResponse(await res.json());
+      } catch(e) { showResult("⚠️ Ошибка сети", "Не удалось отправить снимок."); }
+    }
+
+    function handleServerResponse(data) {
+      document.getElementById('loader').style.display = 'none';
+      const staleBlock = document.getElementById('staleActionBlock');
+      staleBlock.style.display = 'none';
+
+      if (data.limit_exceeded) {
+        alert(data.message || "⏳ Лимит проверок на сегодня исчерпан!");
+        showTab('pro');
+        return;
+      }
+      
+      if (data.checks_left !== undefined) updateLimitBadge(data.checks_left);
+
+      if (data.is_stale) {
+        showResult(
+          "🟡 ТРЕБУЕТ ОБНОВЛЕНИЯ",
+          `Товар «${data.product_name || "Продукт"}» проверялся более 30 дней назад.\n\n⚠️ Производители часто меняют рецептуру (добавляют скрытый сахар или пальмовый жир). Чтобы вердикт был на 100% точным, сфотографируйте состав прямо сейчас!`,
+          data.product_name
+        );
+        staleBlock.style.display = 'block';
+        return;
+      }
+
+      if (data.ok && data.result) {
+        let verdict = "🟢 ПРИГОДНО";
+        if (data.result.includes("ОПАСНО") || data.result.includes("НЕЛЬЗЯ") || data.result.includes("ВРЕДНО")) verdict = "🔴 ОПАСНО";
+        else if (data.result.includes("НЕЙТРАЛЬНО") || data.result.includes("ОСТОРОЖНОСТЬЮ")) verdict = "🟡 НЕЙТРАЛЬНО";
+        showResult(verdict, data.result, data.product_name);
+      } else { 
+        showResult("⚠️ Ошибка", data.error || "Не удалось получить состав продукта."); 
+      }
+    }
+
+    function updateLimitBadge(left) {
+      const badge = document.getElementById('limitBadge');
+      if (!badge) return;
+      if (left >= 999) {
+        badge.innerText = `👑 PRO-безлимит (Админ)`;
+        badge.className = "inline-flex text-[11px] font-bold text-amber-600 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200";
+      } else {
+        badge.innerText = `📊 Осталось: ${left} из 5`;
+        badge.className = left > 0 ? "inline-flex text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded-full" : "inline-flex text-[11px] font-semibold text-red-600 bg-red-50 px-2.5 py-0.5 rounded-full";
+      }
+    }
+
+    function showResult(badge, text, title) {
+      document.getElementById('loader').style.display = 'none';
+      const card = document.getElementById('resultCard');
+      const badgeEl = document.getElementById('badgeVerdict');
+      badgeEl.innerText = badge;
+      badgeEl.className = badge.includes("ОПАСНО") ? "text-xs px-2.5 py-0.5 rounded-full font-bold bg-red-100 text-red-700" : (badge.includes("НЕЙТРАЛЬНО") || badge.includes("ОБНОВЛЕНИЯ") ? "text-xs px-2.5 py-0.5 rounded-full font-bold bg-amber-100 text-amber-700" : "text-xs px-2.5 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-700");
+      document.getElementById('productTitle').innerText = title || ("Вердикт (" + (activeScannerTarget === "ALL" ? "Вся семья" : activeScannerTarget) + ")");
+      document.getElementById('resultText').innerText = text;
+      card.style.display = 'block';
+    }
+
+    function buyProPlan(days) {
+      if (tg) { 
+        tg.openTelegramLink(`https://t.me/Food_Inspection_bot?start=pro_${days}`); 
+        tg.close(); 
+      } else { 
+        window.open(`https://max.ru/food_inspection_bot?cmd=pro_${days}`, '_blank');
+      }
+    }
+
+    async function startBarcodeScanner() {
+      document.getElementById('barcodeModal').style.display = 'flex';
+      try {
+        if (!html5QrScanner) html5QrScanner = new Html5Qrcode("barcodeReader");
+        await html5QrScanner.start({ facingMode: "environment" }, { fps: 15, qrbox: { width: 280, height: 140 } }, (code) => { stopBarcodeScanner(); sendBarcodeToN8n(code); }, () => {});
+      } catch(e) { stopBarcodeScanner(); openManualInput(); }
+    }
+    async function stopBarcodeScanner() { if (html5QrScanner && html5QrScanner.isScanning) { try { await html5QrScanner.stop(); } catch(e){} } document.getElementById('barcodeModal').style.display = 'none'; }
+    function openManualInput() { stopBarcodeScanner(); const c = prompt("Введите штрихкод:"); if (c) sendBarcodeToN8n(c.trim()); }
+    async function startLiveCamera() {
+      const m = document.getElementById('cameraModal'), v = document.getElementById('cameraStream'); m.style.display = 'flex';
+      try { currentStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }); v.srcObject = currentStream; v.play(); } catch(e) { fallbackToNativeCamera(); }
+    }
+    function stopLiveCamera() { if (currentStream) { currentStream.getTracks().forEach(t => t.stop()); currentStream = null; } document.getElementById('cameraStream').srcObject = null; document.getElementById('cameraModal').style.display = 'none'; }
+    function fallbackToNativeCamera() { stopLiveCamera(); document.getElementById('nativeCameraInput').click(); }
+    function captureSnapshot() {
+      const v = document.getElementById('cameraStream'), c = document.createElement('canvas');
+      c.width = v.videoWidth || 1280; c.height = v.videoHeight || 720;
+      c.getContext('2d').drawImage(v, 0, 0); const data = c.toDataURL('image/jpeg', 0.85);
+      stopLiveCamera(); sendPhotoToN8n(data);
+    }
+    function triggerGallery() { document.getElementById('galleryInput').click(); }
+    function processFilePhoto(e) {
+      const f = e.target.files[0]; if (!f) return;
+      const r = new FileReader(); r.onload = (ev) => sendPhotoToN8n(ev.target.result); r.readAsDataURL(f);
+    }
+  </script>
+</body>
+</html>
