@@ -63,22 +63,18 @@
   <header class="fixed top-0 left-0 right-0 z-50 glass-nav border-b border-dark-border">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
       
-      <!-- ЛОГОТИП (ФИРМЕННЫЙ ЗНАК БЕЗ ТЕКСТА + АККУРАТНОЕ НАЗВАНИЕ) -->
+      <!-- ЛОГОТИП (ОБЪЕКТИВ-ДИАФРАГМА БЕЗ ТЕКСТА + АККУРАТНОЕ НАЗВАНИЕ) -->
       <a href="#" class="flex items-center space-x-3.5 group">
         <div class="relative w-10 h-10 flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
-          <!-- ВЕКТОРНАЯ РЕПЛИКА ВАШЕГО ОБЪЕКТИВА -->
           <svg class="w-full h-full drop-shadow-[0_0_12px_rgba(99,102,241,0.5)]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M50 5 L85 24 V66 L50 85 L15 66 V24 Z" fill="#080C14" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
-            <!-- Лепестки диафрагмы -->
             <path d="M50 12 L80 28 L58 46 L38 24 Z" fill="url(#pYellow)" />
             <path d="M80 30 L82 65 L60 52 L62 33 Z" fill="url(#pGreenLight)" />
             <path d="M78 68 L50 82 L46 58 L68 55 Z" fill="url(#pGreenDark)" />
             <path d="M48 82 L20 66 L38 48 L54 68 Z" fill="url(#pRed)" />
             <path d="M18 64 L18 28 L40 40 L30 58 Z" fill="url(#pOrange)" />
             <path d="M22 26 L48 13 L56 34 L32 37 Z" fill="url(#pGold)" />
-            <!-- Центральный гексагон -->
             <polygon points="50,34 64,42 64,58 50,66 36,58 36,42" fill="url(#pPurple)" stroke="#FFFFFF" stroke-width="1.5"/>
-            <!-- Градиенты -->
             <defs>
               <linearGradient id="pYellow" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FCD34D"/><stop offset="100%" stop-color="#F59E0B"/></linearGradient>
               <linearGradient id="pGreenLight" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4ADE80"/><stop offset="100%" stop-color="#16A34A"/></linearGradient>
@@ -99,9 +95,9 @@
       <!-- ССЫЛКИ -->
       <nav class="hidden md:flex items-center space-x-8 text-xs font-semibold text-slate-400">
         <a href="#tech" class="hover:text-emerald-400 transition">Технологии</a>
-        <a href="#family" class="hover:text-emerald-400 transition">Семейный профиль</a>
-        <a href="#skimpflation" class="hover:text-emerald-400 transition">Детектор рецептур</a>
+        <a href="#family" class="hover:text-emerald-400 transition">Семья</a>
         <a href="#pricing" class="hover:text-emerald-400 transition">Тарифы</a>
+        <a href="#truth" class="hover:text-emerald-400 transition">Фото vs Штрихкод</a>
         <a href="#faq" class="hover:text-emerald-400 transition">FAQ</a>
       </nav>
 
@@ -113,18 +109,17 @@
         </a>
         <a href="https://max.ru" target="_blank" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-90 text-black font-extrabold text-xs transition flex items-center space-x-2 shadow-lg shadow-emerald-500/20">
           <span>💬</span>
-          <span>Мессенджер MAX</span>
+          <span>MAX</span>
         </a>
       </div>
     </div>
   </header>
 
-  <!-- ГЛАВНЫЙ БЛОК (HERO SECTION С СВЕЧЕНИЕМ И СЕТКОЙ) -->
+  <!-- ГЛАВНЫЙ БЛОК (HERO SECTION) -->
   <section class="relative pt-36 pb-24 overflow-hidden grid-bg hero-glow">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 relative">
       <div class="flex flex-col lg:flex-row items-center justify-between gap-12">
         
-        <!-- ЛЕВЫЙ ТЕКСТОВЫЙ БЛОК -->
         <div class="max-w-2xl text-center lg:text-left space-y-7">
           <div class="inline-flex items-center space-x-2.5 px-3.5 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 backdrop-blur-md">
             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -137,10 +132,9 @@
           </h1>
 
           <p class="text-sm sm:text-base text-slate-400 leading-relaxed max-w-xl mx-auto lg:mx-0">
-            Маркетологи пишут «ЭКО» и прячут опасную химию в мелком шрифте. Наведите камеру на штрихкод или этикетку — искусственный интеллект моментально выявит скрытый сахар, опасные Е-добавки и аллергены индивидуально для вашей семьи.
+            Маркетологи пишут «ЭКО» и прячут опасную химию в мелком шрифте. Наведите камеру на штрихкод или этикетку — сервис моментально выявит скрытый сахар, опасные Е-добавки и аллергены индивидуально для вашей семьи.
           </p>
 
-          <!-- ДВЕ БОЛЬШИЕ КНОПКИ ЗАПУСКА -->
           <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
             <a href="https://t.me/Food_Inspection_bot" target="_blank" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white text-slate-900 font-black text-xs sm:text-sm tracking-wide shadow-xl hover:bg-slate-100 transition active:scale-95 flex items-center justify-center space-x-2.5">
               <span>✈️ Запустить в Telegram</span>
@@ -150,29 +144,23 @@
             </a>
           </div>
 
-          <!-- МИКРО-ПОКАЗАТЕЛИ -->
-          <div class="pt-4 flex items-center justify-center lg:justify-start space-x-6 text-slate-500 text-xs">
-            <div class="flex items-center space-x-2">
-              <span class="text-emerald-400 font-bold">✓</span>
-              <span>Без установки из App Store</span>
+          <!-- ЧЁТКИЙ БЛОК ПРО 5 БЕСПЛАТНЫХ ПРОВЕРОК -->
+          <div class="pt-2 flex items-center justify-center lg:justify-start space-x-4 text-xs font-semibold">
+            <div class="px-3.5 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center gap-1.5">
+              <span>🎁</span>
+              <span>5 проверок в сутки — бесплатно для каждого</span>
             </div>
-            <div class="flex items-center space-x-2">
-              <span class="text-emerald-400 font-bold">✓</span>
-              <span>5 бесплатных проверок ежедневно</span>
-            </div>
+            <span class="text-slate-500 hidden sm:inline">• Без привязки карт</span>
           </div>
         </div>
 
-        <!-- ПРАВЫЙ ИНТЕРАКТИВНЫЙ МАКЕТ СО СКАНЕРОМ -->
+        <!-- МАКЕТ СО СКАНЕРОМ -->
         <div class="relative w-full max-w-sm lg:max-w-md">
           <div class="relative rounded-3xl bg-dark-card border border-dark-border p-5 shadow-2xl shadow-indigo-500/10 space-y-4">
             
-            <!-- Индикатор товара и лазерного луча -->
             <div class="relative h-64 rounded-2xl bg-slate-950 border border-slate-800/80 overflow-hidden flex flex-col items-center justify-center p-4">
-              <!-- Имитация сканирующей лазерной полосы -->
               <div class="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-emerald-400 to-transparent shadow-[0_0_15px_#10b981] animate-scan-line"></div>
               
-              <!-- Карточка сканируемого товара -->
               <div class="text-center space-y-2 opacity-90">
                 <span class="text-4xl">🍫</span>
                 <p class="text-xs font-bold text-white">Шоколад молочный с фундуком</p>
@@ -182,7 +170,6 @@
               </div>
             </div>
 
-            <!-- Реальный вердикт семейного анализа -->
             <div class="bg-slate-900/90 rounded-2xl p-4 border border-slate-800 space-y-2.5">
               <div class="flex justify-between items-center">
                 <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Семейный вердикт:</span>
@@ -207,7 +194,7 @@
     </div>
   </section>
 
-  <!-- BENTO-GRID ТЕХНОЛОГИЙ В СТИЛЕ BUSINESS.MAX -->
+  <!-- ТЕХНОЛОГИИ -->
   <section id="tech" class="py-24 border-t border-dark-border">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 space-y-16">
       
@@ -218,37 +205,33 @@
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         
-        <!-- Карточка 1: Детектор скимпфляции -->
         <div class="md:col-span-2 rounded-3xl bg-dark-card border border-dark-border hover:border-dark-borderHover p-8 relative overflow-hidden transition-all duration-300">
           <div class="relative z-10 space-y-4 max-w-lg">
-            <span class="px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xs font-bold">Уникальная технология</span>
+            <span class="px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xs font-bold">Уникально</span>
             <h3 class="text-2xl font-black text-white">Детектор тихой смены рецептуры</h3>
             <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
-              Производители любят незаметно удешевлять состав: заменять какао-масло на гидрогенизированный жир или натуральный сахар на синтетику. Каждые 30 дней система сверяет заводские партии и выводит предупреждение: <b>«Внимание: завод изменил рецептуру товара!»</b>
+              Производители любят незаметно удешевлять состав: заменять масло на пальмовый жир или сахар на дешевые сахарозаменители. Каждые 30 дней система сверяет заводские партии и выводит предупреждение: <b>«Внимание: завод изменил рецептуру товара!»</b>
             </p>
           </div>
           <div class="absolute -right-12 -bottom-12 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
         </div>
 
-        <!-- Карточка 2: Самообучение -->
         <div class="rounded-3xl bg-dark-card border border-dark-border hover:border-dark-borderHover p-8 space-y-4 transition-all duration-300">
           <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-xs font-bold">Smart Memory</span>
           <h3 class="text-xl font-black text-white">Самообучающаяся база</h3>
           <p class="text-xs text-slate-400 leading-relaxed">
-            Встретилась редкая Е-добавка или новинка супермаркета? ИИ анализирует её свойства один раз и навсегда заносит в общую базу. Следующий человек получает ответ за 0.03 секунды.
+            Встретилась редкая Е-добавка или местный продукт? Система анализирует свойства один раз и заносит в независимую базу. Следующий человек получает ответ за 0.03 секунды.
           </p>
         </div>
 
-        <!-- Карточка 3: Фото vs Штрихкод -->
         <div class="rounded-3xl bg-dark-card border border-dark-border hover:border-dark-borderHover p-8 space-y-4 transition-all duration-300">
           <span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-bold">100% Точность</span>
           <h3 class="text-xl font-black text-white">Фото состава > Штрихкод</h3>
           <p class="text-xs text-slate-400 leading-relaxed">
-            Штрихкод — это просто 13 цифр индекса, фабрики не меняют его годами. Реальное фото текста на обороте пачки читает факты здесь и сейчас, исключая любые региональные подделки.
+            Штрихкод — это просто 13 цифр индекса, заводы не меняют его годами. Реальное фото этикетки на пачке читает фактический состав здесь и сейчас, исключая ошибки.
           </p>
         </div>
 
-        <!-- Карточка 4: Светофор вердиктов -->
         <div class="md:col-span-2 rounded-3xl bg-dark-card border border-dark-border hover:border-dark-borderHover p-8 space-y-4 relative overflow-hidden transition-all duration-300">
           <span class="px-3 py-1 rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20 text-xs font-bold">Стандарты оценки</span>
           <h3 class="text-2xl font-black text-white">3 кристально понятных статуса</h3>
@@ -260,7 +243,7 @@
               <b class="block font-bold">🟡 НЕЙТРАЛЬНО</b> Есть спорные добавки или умеренное количество сахара.
             </div>
             <div class="p-3.5 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-300">
-              <b class="block font-bold">🔴 ОПАСНО</b> Найдена скрытая угроза, аллерген или ядовитый краситель.
+              <b class="block font-bold">🔴 ОПАСНО</b> Найдена скрытая угроза, аллерген или вредный краситель.
             </div>
           </div>
         </div>
@@ -269,30 +252,29 @@
     </div>
   </section>
 
-  <!-- СЕМЕЙНЫЙ РЕЖИМ (ПОДРОБНЫЙ РАЗБОР) -->
+  <!-- СЕМЕЙНЫЙ РЕЖИМ -->
   <section id="family" class="py-24 bg-dark-card/50 border-t border-dark-border">
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
       <div class="max-w-3xl mx-auto text-center space-y-4 mb-16">
         <h2 class="text-xs font-black uppercase tracking-widest text-emerald-400">Персонализация</h2>
         <p class="text-3xl sm:text-5xl font-black text-white">Один продукт. Разный вердикт.</p>
-        <p class="text-xs sm:text-sm text-slate-400">То, что безвредно для взрослого, может быть токсично для ребенка до 5 лет или вызвать кому у диабетика.</p>
+        <p class="text-xs sm:text-sm text-slate-400">То, что безвредно для взрослого, может быть токсично для ребенка до 5 лет или вызвать скачок сахара у диабетика.</p>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        
         <div class="p-6 rounded-3xl bg-dark-card border border-dark-border space-y-3">
           <div class="text-2xl">👶</div>
           <h4 class="text-sm font-bold text-white">Дети (до 12 лет)</h4>
           <p class="text-xs text-slate-400 leading-relaxed">
-            Автоматическая блокировка красителей Саутгемптона (E102, E110, E122, E124, E129), провоцирующих приступы СДВГ и гиперактивности.
+            Блокировка красителей Саутгемптона (E102, E110, E122, E124, E129), провоцирующих СДВГ и гиперактивность.
           </p>
         </div>
 
         <div class="p-6 rounded-3xl bg-dark-card border border-dark-border space-y-3">
           <div class="text-2xl">🩸</div>
-          <h4 class="text-sm font-bold text-white">Диабет и похудение</h4>
+          <h4 class="text-sm font-bold text-white">Диабет и диета</h4>
           <p class="text-xs text-slate-400 leading-relaxed">
-            Поиск мальтодекстрина (гликемический индекс 130), декстрозы, крахмальной патоки и скрытых сиропов под видом «ЗОЖ-батончиков».
+            Поиск мальтодекстрина (ГИ 130), декстрозы, крахмальной патоки и сиропов под видом «полезных фитнес-сладостей».
           </p>
         </div>
 
@@ -300,91 +282,102 @@
           <div class="text-2xl">🫀</div>
           <h4 class="text-sm font-bold text-white">Возраст 50+ лет</h4>
           <p class="text-xs text-slate-400 leading-relaxed">
-            Отслеживание скрытого натрия и соли (скачки артериального давления) и фосфатов E338–E343 (вымывание кальция из костей).
+            Отслеживание скрытого натрия и соли (давление) и фосфатов E338–E343 (вымывание кальция из костей).
           </p>
         </div>
 
         <div class="p-6 rounded-3xl bg-dark-card border border-dark-border space-y-3">
           <div class="text-2xl">🌾</div>
-          <h4 class="text-sm font-bold text-white">Аллергии и диеты</h4>
+          <h4 class="text-sm font-bold text-white">Аллергии</h4>
           <p class="text-xs text-slate-400 leading-relaxed">
-            Мгновенный отсев скрытой сыворотки (лактоза), казеина, ячменного солода (глютен) и следов арахиса.
+            Мгновенный отсев скрытой молочной сыворотки (лактоза), казеина, ячменного солода (глютен) и следов орехов.
           </p>
         </div>
-
       </div>
     </div>
   </section>
 
-  <!-- ТАРИФНАЯ СЕТКА (С ИНТЕРАКТИВНЫМ ПЕРЕКЛЮЧАТЕЛЕМ) -->
-  <section id="pricing" class="py-24 border-t border-dark-border">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+  <!-- РАЗДЕЛ ТАРИФОВ (СТРОГО В РУБЛЯХ С АКЦЕНТОМ НА 5 БЕСПЛАТНЫХ В СУТКИ) -->
+  <section id="pricing" class="py-24 border-t border-dark-border relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 space-y-12">
       
-      <div class="text-center max-w-2xl mx-auto space-y-4 mb-16">
-        <h2 class="text-xs font-black uppercase tracking-widest text-emerald-400">Инвестиция в семью</h2>
-        <p class="text-3xl sm:text-5xl font-black text-white">Честные тарифы PRO</p>
-        <p class="text-xs sm:text-sm text-slate-400">5 бесплатных сканов ежедневно даются каждому. Для неограниченных закупок выберите тариф.</p>
+      <div class="text-center max-w-2xl mx-auto space-y-4">
+        <h2 class="text-xs font-black uppercase tracking-widest text-emerald-400">Стоимость и доступ</h2>
+        <p class="text-3xl sm:text-5xl font-black text-white">Прозрачные тарифы</p>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- ГЛАВНЫЙ БЛОК: 5 БЕСПЛАТНЫХ ПРОВЕРОК ДЛЯ КАЖДОГО -->
+      <div class="max-w-3xl mx-auto p-6 sm:p-8 rounded-3xl bg-emerald-500/10 border-2 border-emerald-500/30 backdrop-blur-md flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
+        <div class="space-y-1.5">
+          <span class="inline-block px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-extrabold uppercase tracking-wide">Базовый доступ</span>
+          <h3 class="text-xl sm:text-2xl font-black text-white">5 проверок в сутки — Бесплатно</h3>
+          <p class="text-xs text-slate-300 max-w-md leading-relaxed">
+            Этого вполне достаточно для повседневных покупок в магазине. Лимит автоматически обновляется каждые 24 часа. Без подписок и без привязки карт.
+          </p>
+        </div>
+        <div class="flex-shrink-0">
+          <a href="https://t.me/Food_Inspection_bot" target="_blank" class="px-6 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-black text-xs transition block shadow-lg shadow-emerald-500/20 active:scale-95">
+            Попробовать бесплатно
+          </a>
+        </div>
+      </div>
+
+      <!-- ПЕРЕХОД К ЦЕНАМ НА БЕЗЛИМИТ -->
+      <div class="text-center pt-6 space-y-2">
+        <h3 class="text-lg sm:text-xl font-black text-white">Нужен полный безлимит для больших семейных закупок?</h3>
+        <p class="text-xs text-slate-400 max-w-xl mx-auto">
+          Если вы закупаетесь на всю неделю и 5 сканов не хватает — подключите безлимитный PRO-доступ без ограничений:
+        </p>
+      </div>
+
+      <!-- ТАРИФНАЯ СЕТКА СТРОГО В РУБЛЯХ (БЕЗ ЗВЁЗД) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-2">
         
         <!-- 1 месяц -->
         <div class="rounded-3xl bg-dark-card border border-dark-border p-6 flex flex-col justify-between space-y-6">
           <div class="space-y-3">
-            <h3 class="text-sm font-bold text-slate-300">1 месяц</h3>
-            <div class="space-y-0.5">
-              <span class="text-3xl font-black text-white">150 ⭐</span>
-              <span class="block text-xs font-bold text-emerald-400">или 290 ₽</span>
-            </div>
-            <p class="text-xs text-slate-400">Пробный безлимит на месяц покупок</p>
+            <h4 class="text-sm font-bold text-slate-300">1 месяц</h4>
+            <p class="text-3xl font-black text-white">290 ₽</p>
+            <p class="text-xs text-slate-400">Полный безлимит на 30 дней для одного человека</p>
           </div>
-          <a href="https://t.me/Food_Inspection_bot?start=pro_30" target="_blank" class="w-full py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs text-center transition">Выбрать тариф</a>
+          <a href="https://t.me/Food_Inspection_bot?start=pro_30" target="_blank" class="w-full py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs text-center transition">Выбрать безлимит</a>
         </div>
 
         <!-- 2 месяца -->
         <div class="rounded-3xl bg-dark-card border border-dark-border p-6 flex flex-col justify-between space-y-6">
           <div class="space-y-3">
             <div class="flex justify-between items-center">
-              <h3 class="text-sm font-bold text-slate-300">2 месяца</h3>
+              <h4 class="text-sm font-bold text-slate-300">2 месяца</h4>
               <span class="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">-10%</span>
             </div>
-            <div class="space-y-0.5">
-              <span class="text-3xl font-black text-white">270 ⭐</span>
-              <span class="block text-xs font-bold text-emerald-400">или 520 ₽</span>
-            </div>
-            <p class="text-xs text-slate-400">Экономный сезонный доступ</p>
+            <p class="text-3xl font-black text-white">520 ₽</p>
+            <p class="text-xs text-slate-400">Выгодное продление безлимитных проверок</p>
           </div>
-          <a href="https://t.me/Food_Inspection_bot?start=pro_60" target="_blank" class="w-full py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs text-center transition">Выбрать тариф</a>
+          <a href="https://t.me/Food_Inspection_bot?start=pro_60" target="_blank" class="w-full py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs text-center transition">Выбрать безлимит</a>
         </div>
 
         <!-- 3 месяца -->
         <div class="rounded-3xl bg-dark-card border border-dark-border p-6 flex flex-col justify-between space-y-6">
           <div class="space-y-3">
             <div class="flex justify-between items-center">
-              <h3 class="text-sm font-bold text-slate-300">3 месяца</h3>
+              <h4 class="text-sm font-bold text-slate-300">3 месяца</h4>
               <span class="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">-15%</span>
             </div>
-            <div class="space-y-0.5">
-              <span class="text-3xl font-black text-white">380 ⭐</span>
-              <span class="block text-xs font-bold text-emerald-400">или 740 ₽</span>
-            </div>
-            <p class="text-xs text-slate-400">Квартальный семейный контроль</p>
+            <p class="text-3xl font-black text-white">740 ₽</p>
+            <p class="text-xs text-slate-400">Квартальный контроль здоровья без лимитов</p>
           </div>
-          <a href="https://t.me/Food_Inspection_bot?start=pro_90" target="_blank" class="w-full py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs text-center transition">Выбрать тариф</a>
+          <a href="https://t.me/Food_Inspection_bot?start=pro_90" target="_blank" class="w-full py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs text-center transition">Выбрать безлимит</a>
         </div>
 
         <!-- 6 месяцев ХИТ -->
         <div class="rounded-3xl bg-gradient-to-b from-emerald-950/40 via-dark-card to-dark-card border-2 border-emerald-500/50 p-6 flex flex-col justify-between space-y-6 relative shadow-2xl shadow-emerald-500/20">
           <div class="space-y-3">
             <div class="flex justify-between items-center">
-              <h3 class="text-sm font-black text-white">6 месяцев (Семья)</h3>
+              <h4 class="text-sm font-black text-white">6 месяцев (Семья)</h4>
               <span class="px-2 py-0.5 rounded-md bg-emerald-400 text-black text-[10px] font-black">ХИТ -25%</span>
             </div>
-            <div class="space-y-0.5">
-              <span class="text-3xl font-black text-emerald-400">675 ⭐</span>
-              <span class="block text-xs font-bold text-white">или 1 290 ₽</span>
-            </div>
-            <p class="text-xs text-slate-300">Полный семейный безлимит на полгода вперед</p>
+            <p class="text-3xl font-black text-emerald-400">1 290 ₽</p>
+            <p class="text-xs text-slate-300">Максимальная выгода для всей семьи на полгода вперёд</p>
           </div>
           <a href="https://t.me/Food_Inspection_bot?start=pro_180" target="_blank" class="w-full py-3.5 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-black font-black text-xs text-center transition shadow-lg shadow-emerald-500/20">Оформить безлимит</a>
         </div>
@@ -393,11 +386,24 @@
     </div>
   </section>
 
+  <!-- ЭКСПЕРТНЫЙ БЛОК: ФОТО VS ШТРИХКОД -->
+  <section id="truth" class="py-24 bg-dark-card/30 border-t border-dark-border">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6">
+      <div class="bg-dark-card border border-dark-border text-white p-8 sm:p-12 rounded-[2.5rem] shadow-xl space-y-5">
+        <span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-bold">Экспертное разъяснение</span>
+        <h2 class="text-2xl sm:text-3xl font-black">Почему фото состава точнее штрихкода?</h2>
+        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+          Штрихкод — это просто цифры индекса на упаковке. Когда завод тихо меняет рецептуру или выпускает партию в другом регионе со старыми цифрами, штрихкод об этом не знает. <b>Фотография реального состава на пачке гарантирует 100% точность</b>, так как искусственный интеллект читает актуальные буквы прямо с вашей упаковки в магазине.
+        </p>
+      </div>
+    </div>
+  </section>
+
   <!-- FAQ -->
-  <section id="faq" class="py-24 border-t border-dark-border bg-dark-card/30">
+  <section id="faq" class="py-24 border-t border-dark-border">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 space-y-12">
       <div class="text-center space-y-3">
-        <h2 class="text-xs font-black uppercase tracking-widest text-emerald-400">Вопросы и ответы</h2>
+        <h2 class="text-xs font-black uppercase tracking-widest text-emerald-400">Частые вопросы</h2>
         <p class="text-3xl font-black text-white">FAQ</p>
       </div>
 
@@ -408,23 +414,23 @@
             <span class="text-emerald-400 group-open:rotate-180 transition">▼</span>
           </summary>
           <p class="text-xs text-slate-400 mt-3 leading-relaxed">
-            Просто откройте бота в Telegram или мессенджере MAX. Приложение запустится мгновенно внутри чата. Никаких паролей и скачиваний.
+            Просто откройте бота в Telegram или мессенджере MAX. Приложение запустится мгновенно внутри чата. Никаких паролей и скачиваний из App Store не требуется.
           </p>
         </details>
 
         <details class="group rounded-2xl bg-dark-card border border-dark-border p-6 cursor-pointer">
           <summary class="flex justify-between items-center font-bold text-sm text-white list-none">
-            <span>Почему фотография состава надёжнее штрихкода?</span>
+            <span>Как работает оплата в рублях?</span>
             <span class="text-emerald-400 group-open:rotate-180 transition">▼</span>
           </summary>
           <p class="text-xs text-slate-400 mt-3 leading-relaxed">
-            Штрихкод связывает товар с каталогом, но производитель может изменить рецептуру, не меняя сам код. Живое фото упаковки гарантирует 100% точность: ИИ читает свежий текст партии прямо перед вами.
+            Оплата происходит через официальные защищенные шлюзы (СБП, банковские карты РФ) моментально, безопасно и с выдачей фискального чека.
           </p>
         </details>
 
         <details class="group rounded-2xl bg-dark-card border border-dark-border p-6 cursor-pointer">
           <summary class="flex justify-between items-center font-bold text-sm text-white list-none">
-            <span>Где хранятся мои данные здоровья?</span>
+            <span>Где сохраняются мои аллергии и болезни?</span>
             <span class="text-emerald-400 group-open:rotate-180 transition">▼</span>
           </summary>
           <p class="text-xs text-slate-400 mt-3 leading-relaxed">
@@ -462,7 +468,7 @@
             <span class="text-2xl">💬</span>
             <div>
               <p class="text-xs font-bold text-white">Мессенджер MAX</p>
-              <p class="text-[11px] text-slate-400">Канал платформы</p>
+              <p class="text-[11px] text-slate-400">Официальная поддержка</p>
             </div>
           </a>
 
@@ -475,25 +481,11 @@
           </div>
         </div>
 
-        <!-- ФОРМА ОТПРАВКИ -->
         <form id="contactForm" onsubmit="handleContactSubmit(event)" class="rounded-3xl bg-dark-card border border-dark-border p-7 space-y-4">
           <h3 class="text-sm font-bold text-white">Написать разработчикам:</h3>
-          
-          <div>
-            <label class="text-[11px] font-bold text-slate-400 block mb-1">Ваше имя:</label>
-            <input type="text" id="contactName" required placeholder="Анна" class="w-full text-xs p-3 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-emerald-500">
-          </div>
-
-          <div>
-            <label class="text-[11px] font-bold text-slate-400 block mb-1">Контакты (Telegram / Email):</label>
-            <input type="text" id="contactInfo" required placeholder="@username или email" class="w-full text-xs p-3 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-emerald-500">
-          </div>
-
-          <div>
-            <label class="text-[11px] font-bold text-slate-400 block mb-1">Сообщение / Ошибка в товаре:</label>
-            <textarea id="contactMessage" required rows="3" placeholder="Вопрос или неточный состав товара..." class="w-full text-xs p-3 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-emerald-500"></textarea>
-          </div>
-
+          <div><label class="text-[11px] font-bold text-slate-400 block mb-1">Ваше имя:</label><input type="text" id="contactName" required placeholder="Анна" class="w-full text-xs p-3 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-emerald-500"></div>
+          <div><label class="text-[11px] font-bold text-slate-400 block mb-1">Контакты (Telegram / Email):</label><input type="text" id="contactInfo" required placeholder="@username или email" class="w-full text-xs p-3 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-emerald-500"></div>
+          <div><label class="text-[11px] font-bold text-slate-400 block mb-1">Сообщение / Ошибка в товаре:</label><textarea id="contactMessage" required rows="3" placeholder="Вопрос или неточный состав товара..." class="w-full text-xs p-3 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-emerald-500"></textarea></div>
           <button type="submit" id="btnSubmitContact" class="w-full py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-black text-xs transition active:scale-95">Отправить обращение</button>
           <p id="formStatus" class="hidden text-center text-xs font-bold text-emerald-400 pt-1">✅ Спасибо! Ваше сообщение принято.</p>
         </form>
@@ -507,7 +499,6 @@
   <footer class="bg-black py-16 text-xs border-t border-slate-900">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 space-y-10">
       
-      <!-- Юридический дисклеймер -->
       <div class="p-5 rounded-2xl bg-slate-950 border border-slate-900 text-[11px] leading-relaxed text-slate-400 space-y-2">
         <p class="font-bold text-white">Самозанятый Мотовилов Роман Викторович • ИНН 540233076795</p>
         <p class="text-amber-400 font-bold flex items-center gap-1.5"><span>⚠️</span> ВАЖНОЕ ПРАВОВОЕ УВЕДОМЛЕНИЕ (ОТКАЗ ОТ МЕДИЦИНСКОЙ ОТВЕТСТВЕННОСТИ):</p>
@@ -517,7 +508,6 @@
       <div class="flex flex-col sm:flex-row justify-between items-center gap-4 text-slate-600 text-[11px]">
         <p>© 2026 ЧтоВнутри? Все права защищены.</p>
         <div class="flex space-x-6">
-          <!-- КНОПКА ОТКРЫТИЯ ДОГОВОРА ОФЕРТЫ -->
           <button type="button" onclick="openOfferModal()" class="text-slate-400 hover:text-emerald-400 transition font-semibold">
             Публичная оферта
           </button>
@@ -528,7 +518,7 @@
     </div>
   </footer>
 
-  <!-- МОДАЛЬНОЕ ОКНО ПУБЛИЧНОЙ ОФЕРТЫ (ВСТРОЕНО НАПРЯМУЮ В САЙТ) -->
+  <!-- МОДАЛЬНОЕ ОКНО ПУБЛИЧНОЙ ОФЕРТЫ -->
   <div id="offerModal" style="display: none;" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
     <div class="bg-dark-card border border-dark-border max-w-3xl w-full max-h-[85vh] rounded-3xl p-6 sm:p-8 flex flex-col justify-between shadow-2xl relative text-slate-300 text-xs">
       
@@ -537,7 +527,6 @@
         <button type="button" onclick="closeOfferModal()" class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-white hover:bg-slate-700">✕</button>
       </div>
 
-      <!-- ТЕКСТ ВАШЕЙ ВЫВЕРЕННОЙ ОФЕРТЫ -->
       <div class="overflow-y-auto pr-2 my-4 space-y-4 leading-relaxed hide-scrollbar">
         <p class="font-bold text-white">Дата вступления в силу: «30» октября 2026 г.<br>город Новосибирск</p>
         
@@ -578,7 +567,6 @@
   </div>
 
   <script>
-    // МОДАЛЬНОЕ ОКНО ОФЕРТЫ
     function openOfferModal() {
       document.getElementById('offerModal').style.display = 'flex';
     }
@@ -586,7 +574,6 @@
       document.getElementById('offerModal').style.display = 'none';
     }
 
-    // ОТПРАВКА ОБРАТНОЙ СВЯЗИ В n8n
     async function handleContactSubmit(event) {
       event.preventDefault();
       const btn = document.getElementById('btnSubmitContact');
