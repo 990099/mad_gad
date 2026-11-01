@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ЧтоВнутри? — Интеллектуальный сканер состава продуктов</title>
-  <meta name="description" content="Независимый сервис экспресс-анализа состава продуктов по штрихкоду и фото. Персональная проверка на скрытый сахар, опасные Е-добавки и аллергены.">
+  <meta name="description" content="Независимый сервис экспресс-анализа состава продуктов по штрихкоду и фото. Персональная проверка на скрытый сахар, опасные Е-добавки и аллергены без регистрации.">
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -104,7 +104,7 @@
         <a href="#faq" class="hover:text-emerald-400 transition">FAQ</a>
       </nav>
 
-      <!-- ПЛАТФОРМЕННЫЕ КНОПКИ -->
+      <!-- ПЛАТФОРМЕННЫЕ КНОПКИ В ШАПКЕ -->
       <div class="flex items-center space-x-3">
         <a href="https://t.me/Food_Inspection_bot" target="_blank" class="px-4 py-2.5 rounded-xl bg-slate-800/90 hover:bg-slate-700 border border-slate-700 text-white text-xs font-bold transition flex items-center space-x-2 shadow-sm">
           <span class="text-sky-400">✈️</span>
@@ -135,7 +135,7 @@
           </h1>
 
           <p class="text-sm sm:text-base text-slate-400 leading-relaxed max-w-xl mx-auto lg:mx-0">
-            Маркетологи пишут «Фитнес» и прячут опасную химию в нечитаемом шрифте. Наведите камеру на штрихкод, код «Честный ЗНАК» или фото этикетки — сервис моментально выявит скрытый сахар, токсичные Е-добавки и аллергены индивидуально для вашей семьи.
+            Маркетологи пишут «Фитнес» и прячут опасную химию в нечитаемом шрифте. Наведите камеру на штрихкод, код «Честный ЗНАК» или фото этикетки — сервис моментально выявит скрытый сахар, опасные Е-добавки и аллергены индивидуально для вашей семьи.
           </p>
 
           <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
@@ -147,33 +147,34 @@
             </a>
           </div>
 
-          <!-- 5 БЕСПЛАТНЫХ ПРОВЕРОК -->
-          <div class="pt-2 flex items-center justify-center lg:justify-start space-x-4 text-xs font-semibold">
+          <!-- НАШ ГЛАВНЫЙ ПЛЮС: БЕЗ РЕГИСТРАЦИИ -->
+          <div class="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-3 text-xs font-bold">
+            <div class="px-3.5 py-1.5 rounded-xl bg-amber-400/10 border border-amber-400/30 text-amber-300 flex items-center gap-1.5">
+              <span>⚡️</span>
+              <span>БЕЗ РЕГИСТРАЦИИ И СКАЧИВАНИЙ</span>
+            </div>
             <div class="px-3.5 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center gap-1.5">
               <span>🎁</span>
-              <span>5 проверок в сутки — бесплатно каждому</span>
+              <span>5 проверок в сутки бесплатно</span>
             </div>
-            <span class="text-slate-500 hidden sm:inline">• Без привязки карт</span>
           </div>
         </div>
 
-        <!-- ИНТЕРАКТИВНЫЙ ДЕМО-СКАНЕР ПРЯМО НА САЙТЕ (ФИШКА YUKA) -->
+        <!-- ИНТЕРАКТИВНЫЙ ДЕМО-СКАНЕР -->
         <div id="demo" class="relative w-full max-w-sm lg:max-w-md">
           <div class="rounded-3xl bg-dark-card border border-dark-border p-5 shadow-2xl shadow-indigo-500/10 space-y-4">
             
             <div class="flex justify-between items-center text-xs px-1">
-              <span class="font-bold text-slate-400 uppercase tracking-wider text-[10px]">Интерактивный тест сканера:</span>
-              <span class="text-emerald-400 font-bold text-[10px]">Нажмите на товар 👇</span>
+              <span class="font-bold text-slate-400 uppercase tracking-wider text-[10px]">Интерактивный тест:</span>
+              <span class="text-emerald-400 font-bold text-[10px]">Выберите продукт 👇</span>
             </div>
 
-            <!-- Кнопки выбора демонстрационного товара -->
             <div class="grid grid-cols-3 gap-2">
               <button type="button" onclick="loadDemoProduct('yogurt')" id="demoBtn-yogurt" class="p-2 rounded-xl border border-emerald-500 bg-emerald-500/20 text-[11px] font-bold text-white transition">🍓 Йогурт</button>
               <button type="button" onclick="loadDemoProduct('bar')" id="demoBtn-bar" class="p-2 rounded-xl border border-slate-800 bg-slate-900 text-[11px] font-bold text-slate-400 hover:text-white transition">🍫 Батончик</button>
               <button type="button" onclick="loadDemoProduct('sausage')" id="demoBtn-sausage" class="p-2 rounded-xl border border-slate-800 bg-slate-900 text-[11px] font-bold text-slate-400 hover:text-white transition">🌭 Сосиски</button>
             </div>
 
-            <!-- Имитация экрана сканирования с лазерным лучом -->
             <div class="relative h-48 rounded-2xl bg-slate-950 border border-slate-800/80 overflow-hidden flex flex-col items-center justify-center p-3">
               <div class="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-emerald-400 to-transparent shadow-[0_0_15px_#10b981] animate-scan-line"></div>
               <span id="demoIcon" class="text-4xl mb-1">🍓</span>
@@ -181,10 +182,9 @@
               <p id="demoCode" class="text-[10px] text-slate-500 font-mono mt-0.5">Штрихкод: 4607001230012</p>
             </div>
 
-            <!-- Результат с раскладкой на семью -->
             <div class="bg-slate-900/90 rounded-2xl p-4 border border-slate-800 space-y-2">
               <div class="flex justify-between items-center">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Семейный консилиум:</span>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Семейный вердикт:</span>
                 <span id="demoBadge" class="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-red-500/20 text-red-400 border border-red-500/30">🔴 ОПАСНО</span>
               </div>
               <div id="demoDetails" class="text-xs space-y-1.5 text-slate-300">
@@ -201,7 +201,7 @@
     </div>
   </section>
 
-  <!-- МАНИФЕСТ 100% НЕЗАВИСИМОСТИ (ГЛАВНЫЙ СЕКРЕТ ДОВЕРИЯ YUKA) -->
+  <!-- МАНИФЕСТ 100% НЕЗАВИСИМОСТИ -->
   <section id="independence" class="py-20 border-t border-dark-border bg-dark-card/40">
     <div class="max-w-4xl mx-auto px-4 sm:px-6">
       <div class="rounded-3xl border border-emerald-500/30 bg-gradient-to-b from-emerald-950/20 to-dark-card p-8 sm:p-12 text-center space-y-5 relative overflow-hidden">
@@ -211,7 +211,7 @@
         </div>
         <h2 class="text-2xl sm:text-4xl font-black text-white">Манифест 100% независимости</h2>
         <p class="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-2xl mx-auto">
-          Ни один производитель продуктов питания или торговая сеть не могут заплатить нам за хорошую оценку или скрыть опасные добавки. У нас нет скрытой рекламы брендов. Сервис полностью независим и существует исключительно на прямые подписки наших пользователей. Наш единственный клиент — ваше здоровье.
+          Ни один производитель продуктов питания или торговая сеть не могут заплатить нам за хорошую оценку или скрыть опасные добавки. У нас нет рекламы пищевых брендов. Сервис полностью независим. Наш единственный приоритет — ваше здоровье.
         </p>
       </div>
     </div>
@@ -240,11 +240,11 @@
           <div class="space-y-3 text-xs text-slate-300">
             <div class="p-3 rounded-xl bg-red-950/20 border border-red-900/40 space-y-1">
               <p class="font-bold text-red-300">• 48 чайных ложек скрытого сахара</p>
-              <p class="text-[11px] text-slate-400">Спрятаны под видом кукурузной патоки, декстрозы и яблочного концентрата.</p>
+              <p class="text-[11px] text-slate-400">Спрятаны под видом патоки, декстрозы и концентратов.</p>
             </div>
             <div class="p-3 rounded-xl bg-red-950/20 border border-red-900/40 space-y-1">
-              <p class="font-bold text-red-300">• 7 опасных Е-красителей Саутгемптона</p>
-              <p class="text-[11px] text-slate-400">В детских сладостях и соках, провоцирующие гиперактивность и аллергии.</p>
+              <p class="font-bold text-red-300">• 7 опасных красителей для детей</p>
+              <p class="text-[11px] text-slate-400">В детских сладостях, провоцирующие гиперактивность и аллергии.</p>
             </div>
             <div class="p-3 rounded-xl bg-red-950/20 border border-red-900/40 space-y-1">
               <p class="font-bold text-red-300">• 5 продуктов ультрапереработки (NOVA 4)</p>
@@ -268,7 +268,7 @@
             </div>
             <div class="p-3 rounded-xl bg-emerald-950/20 border border-emerald-900/40 space-y-1">
               <p class="font-bold text-emerald-300">• 0 токсичных красителей для детей</p>
-              <p class="text-[11px] text-slate-400">Только натуральные экстракты свеклы, моркови и куркумы.</p>
+              <p class="text-[11px] text-slate-400">Только натуральные экстракты моркови, свеклы и куркумы.</p>
             </div>
             <div class="p-3 rounded-xl bg-emerald-950/20 border border-emerald-900/40 space-y-1">
               <p class="font-bold text-emerald-300">• 100% защита от подмены рецептуры</p>
@@ -281,26 +281,26 @@
     </div>
   </section>
 
-  <!-- ЭКСПРЕСС-ПОИСК Е-ДОБАВОК ПРЯМО НА САЙТЕ -->
+  <!-- ЭКСПРЕСС-ПОИСК Е-ДОБАВОК С ПОЛНОЙ БАЗОЙ (70+ ДОБАВОК) -->
   <section id="e-search" class="py-20 bg-dark-card/30 border-t border-dark-border">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 space-y-8 text-center">
       <div class="space-y-2">
         <h2 class="text-xs font-black uppercase tracking-widest text-emerald-400">Интерактивная база знаний</h2>
         <p class="text-2xl sm:text-3xl font-black text-white">Проверьте любую Е-добавку прямо сейчас</p>
-        <p class="text-xs text-slate-400">Введите номер добавки, чтобы мгновенно узнать её класс опасности</p>
+        <p class="text-xs text-slate-400">Введите номер или код (например: E240, E250, E102, E407, 330), чтобы узнать реальные риски</p>
       </div>
 
       <div class="flex items-center max-w-md mx-auto space-x-2">
-        <input type="text" id="quickEInput" placeholder="Например: E102, E250, E407..." class="flex-1 text-xs p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-emerald-500 uppercase font-mono font-bold">
+        <input type="text" id="quickEInput" placeholder="Например: E240 или E250..." class="flex-1 text-xs p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-emerald-500 uppercase font-mono font-bold">
         <button type="button" onclick="searchQuickE()" class="px-5 py-3.5 bg-emerald-500 hover:bg-emerald-400 text-black font-black text-xs rounded-xl transition active:scale-95">Проверить</button>
       </div>
 
-      <!-- Всплывающий результат поиска Е-кода -->
-      <div id="quickEResult" style="display: none;" class="p-5 rounded-2xl bg-dark-card border border-emerald-500/40 text-left text-xs space-y-2 max-w-md mx-auto shadow-xl"></div>
+      <!-- Всплывающий подробный результат поиска -->
+      <div id="quickEResult" style="display: none;" class="p-6 rounded-2xl bg-dark-card border border-emerald-500/40 text-left text-xs space-y-3 max-w-lg mx-auto shadow-2xl"></div>
     </div>
   </section>
 
-  <!-- НАУЧНАЯ МЕТОДОЛОГИЯ (ЮРИДИЧЕСКИ ЧИСТО) -->
+  <!-- НАУЧНАЯ МЕТОДОЛОГИЯ -->
   <section class="py-20 border-t border-dark-border">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 space-y-12">
       <div class="text-center space-y-3">
@@ -329,37 +329,7 @@
     </div>
   </section>
 
-  <!-- РЕАЛЬНЫЕ ИСТОРИИ (СОЦИАЛЬНОЕ ДОКАЗАТЕЛЬСТВО) -->
-  <section class="py-24 border-t border-dark-border bg-dark-card/30">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 space-y-12">
-      <div class="text-center space-y-3">
-        <h2 class="text-xs font-black uppercase tracking-widest text-emerald-400">Опыт пользователей</h2>
-        <p class="text-2xl sm:text-3xl font-black text-white">Реальные истории семей</p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-slate-300">
-        <div class="p-6 rounded-3xl bg-dark-card border border-dark-border space-y-3">
-          <div class="flex items-center space-x-2 text-amber-400 text-sm">★★★★★</div>
-          <p class="italic leading-relaxed">«Сын постоянно страдал аллергической сыпью на щеках. Со сканером выяснили, что в его любимом "детском" печенье прятался краситель E122. Убрали продукт — кожа очистилась за 10 дней.»</p>
-          <p class="font-bold text-white text-[11px]">— Анна, мама 5-летнего Артема</p>
-        </div>
-
-        <div class="p-6 rounded-3xl bg-dark-card border border-dark-border space-y-3">
-          <div class="flex items-center space-x-2 text-amber-400 text-sm">★★★★★</div>
-          <p class="italic leading-relaxed">«У меня диабет 2 типа. Покупал фитнес-батончики с яркой надписью "0% сахара". Сканер нашел в них патоку с гликемическим индексом выше 100! Спас от скачков инсулина.»</p>
-          <p class="font-bold text-white text-[11px]">— Сергей, 46 лет, Новосибирск</p>
-        </div>
-
-        <div class="p-6 rounded-3xl bg-dark-card border border-dark-border space-y-3">
-          <div class="flex items-center space-x-2 text-amber-400 text-sm">★★★★★</div>
-          <p class="italic leading-relaxed">«Контролирую скрытую соль в соусах и фосфаты в колбасе для пожилой мамы. Давление перестало скакать по вечерам. Спасибо за режим "Вся семья"!»</p>
-          <p class="font-bold text-white text-[11px]">— Елена, 38 лет</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- РАЗДЕЛ ТАРИФОВ (СТРОГО В РУБЛЯХ С БЕСПЛАТНЫМ ДОСТУПОМ) -->
+  <!-- РАЗДЕЛ ТАРИФОВ (СТРОГО В РУБЛЯХ С 2 КНОПКАМИ И БЕЗ РЕГИСТРАЦИИ) -->
   <section id="pricing" class="py-24 border-t border-dark-border relative">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 space-y-12">
       
@@ -368,22 +338,33 @@
         <p class="text-3xl sm:text-5xl font-black text-white">Прозрачные тарифы</p>
       </div>
 
-      <!-- 5 БЕСПЛАТНЫХ ПРОВЕРОК -->
-      <div class="max-w-3xl mx-auto p-6 sm:p-8 rounded-3xl bg-emerald-500/10 border-2 border-emerald-500/30 backdrop-blur-md flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
-        <div class="space-y-1.5">
-          <span class="inline-block px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-extrabold uppercase tracking-wide">Базовый доступ</span>
-          <h3 class="text-xl sm:text-2xl font-black text-white">5 проверок в сутки — Бесплатно</h3>
-          <p class="text-xs text-slate-300 max-w-md leading-relaxed">
-            Этого вполне достаточно для повседневных покупок в магазине. Лимит автоматически обновляется каждые 24 часа. Без подписок и без привязки карт.
-          </p>
-        </div>
-        <div class="flex-shrink-0">
-          <a href="https://t.me/Food_Inspection_bot" target="_blank" class="px-6 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-black text-xs transition block shadow-lg shadow-emerald-500/20 active:scale-95">
-            Попробовать бесплатно
-          </a>
+      <!-- ГЛАВНЫЙ БЛОК: 5 БЕСПЛАТНЫХ ПРОВЕРОК ДЛЯ КАЖДОГО + БЕЗ РЕГИСТРАЦИИ + 2 КНОПКИ -->
+      <div class="max-w-4xl mx-auto p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-emerald-500/15 to-emerald-500/5 border-2 border-emerald-500/40 backdrop-blur-md space-y-6">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+          <div class="space-y-2">
+            <div class="flex flex-wrap items-center justify-center md:justify-start gap-2">
+              <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-black uppercase tracking-wide">Базовый доступ</span>
+              <span class="px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 text-xs font-black uppercase tracking-wide border border-amber-400/30">🔥 БЕЗ РЕГИСТРАЦИИ И СКАЧИВАНИЙ</span>
+            </div>
+            <h3 class="text-2xl sm:text-3xl font-black text-white">5 проверок в сутки — Навсегда Бесплатно</h3>
+            <p class="text-xs sm:text-sm text-slate-300 max-w-xl leading-relaxed">
+              Никаких анкет, логинов и номеров телефонов! Просто откройте бота в привычном мессенджере — и сканер сразу готов к работе прямо в ваших руках. Лимит обновляется каждые 24 часа.
+            </p>
+          </div>
+          
+          <!-- ДВЕ КНОПКИ: TELEGRAM И MAX -->
+          <div class="flex flex-col sm:flex-row md:flex-col gap-2.5 w-full sm:w-auto flex-shrink-0">
+            <a href="https://t.me/Food_Inspection_bot" target="_blank" class="px-5 py-3.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-extrabold text-xs transition flex items-center justify-center gap-2 shadow-lg shadow-sky-500/20 active:scale-95">
+              <span>✈️ Открыть в Telegram</span>
+            </a>
+            <a href="https://max.ru/se14837453_bot" target="_blank" class="px-5 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-90 text-black font-black text-xs transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-95">
+              <span>💬 Открыть в MAX</span>
+            </a>
+          </div>
         </div>
       </div>
 
+      <!-- ПЕРЕХОД К ЦЕНАМ НА БЕЗЛИМИТ -->
       <div class="text-center pt-6 space-y-2">
         <h3 class="text-lg sm:text-xl font-black text-white">Нужен полный безлимит для больших семейных закупок?</h3>
         <p class="text-xs text-slate-400 max-w-xl mx-auto">
@@ -394,6 +375,7 @@
       <!-- ТАРИФНАЯ СЕТКА СТРОГО В РУБЛЯХ (БЕЗ ЗВЁЗД) -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-2">
         
+        <!-- 1 месяц -->
         <div class="rounded-3xl bg-dark-card border border-dark-border p-6 flex flex-col justify-between space-y-6">
           <div class="space-y-3">
             <h4 class="text-sm font-bold text-slate-300">1 месяц</h4>
@@ -403,6 +385,7 @@
           <a href="https://t.me/Food_Inspection_bot?start=pro_30" target="_blank" class="w-full py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs text-center transition">Выбрать безлимит</a>
         </div>
 
+        <!-- 2 месяца -->
         <div class="rounded-3xl bg-dark-card border border-dark-border p-6 flex flex-col justify-between space-y-6">
           <div class="space-y-3">
             <div class="flex justify-between items-center">
@@ -415,6 +398,7 @@
           <a href="https://t.me/Food_Inspection_bot?start=pro_60" target="_blank" class="w-full py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs text-center transition">Выбрать безлимит</a>
         </div>
 
+        <!-- 3 месяца -->
         <div class="rounded-3xl bg-dark-card border border-dark-border p-6 flex flex-col justify-between space-y-6">
           <div class="space-y-3">
             <div class="flex justify-between items-center">
@@ -427,6 +411,7 @@
           <a href="https://t.me/Food_Inspection_bot?start=pro_90" target="_blank" class="w-full py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs text-center transition">Выбрать безлимит</a>
         </div>
 
+        <!-- 6 месяцев ХИТ -->
         <div class="rounded-3xl bg-gradient-to-b from-emerald-950/40 via-dark-card to-dark-card border-2 border-emerald-500/50 p-6 flex flex-col justify-between space-y-6 relative shadow-2xl shadow-emerald-500/20">
           <div class="space-y-3">
             <div class="flex justify-between items-center">
@@ -543,10 +528,9 @@
   <footer class="bg-black py-16 text-xs border-t border-slate-900">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 space-y-8">
       
-      <!-- Юридический блок с ИНН и отказом -->
       <div class="p-5 rounded-2xl bg-slate-950 border border-slate-900 text-[11px] leading-relaxed text-slate-400 space-y-2">
         <p class="font-bold text-white">Самозанятый Мотовилов Роман Викторович • ИНН 540233076795</p>
-        <p class="text-amber-400 font-bold flex items-center gap-1"><span>⚠️</span> ВАЖНОЕ ПРАВОВОЕ УВЕДОМЛЕНИЕ (ОТКАЗ ОТ МЕДИЦИНСКОЙ ОТВЕТСТВЕННОСТИ):</p>
+        <p class="text-amber-400 font-bold flex items-center gap-1.5"><span>⚠️</span> ВАЖНОЕ ПРАВОВОЕ УВЕДОМЛЕНИЕ (ОТКАЗ ОТ МЕДИЦИНСКОЙ ОТВЕТСТВЕННОСТИ):</p>
         <p>Сервис «ЧтоВнутри? / Food Scanner PRO» оказывает исключительно справочно-информационные услуги по автоматизированной расшифровке состава продовольственных товаров. Сервис не является медицинской организацией, не ставит диагнозов и не заменяет консультации лечащего врача. При наличии подтвержденных аллергий всегда лично сверяйтесь с текстом на упаковке.</p>
         <p class="text-[10px] text-slate-600">Все упомянутые на сайте торговые марки, товарные знаки и стандарты принадлежат их законным правообладателям и упоминаются исключительно в ознакомительных целях.</p>
       </div>
@@ -660,38 +644,125 @@
       document.getElementById('demoDetails').innerHTML = p.details;
     }
 
-    // 2. БЫСТРЫЙ ПОИСК Е-ДОБАВОК
+    // 2. БОЛЬШАЯ ЭКСПЕРТНАЯ БАЗА Е-ДОБАВОК (70+ ПОЗИЦИЙ С РАСШИФРОВКОЙ)
     const quickEDatabase = {
-      "E102": { name: "Тартразин", level: "🔴 ОПАСНО", desc: "Синтетический желтый краситель. Доказан риск гиперактивности и дефицита внимания (СДВГ) у детей. Сильный аллерген." },
-      "E110": { name: "Желтый «Солнечный закат»", level: "🔴 ОПАСНО", desc: "Запрещен в детском питании в ряде стран. Провоцирует бронхоспазмы у аллергиков." },
-      "E122": { name: "Азорубин", level: "🔴 ОПАСНО", desc: "Красный краситель из каменноугольной смолы. Сильный провокатор кожной сыпи и детской гиперактивности." },
-      "E129": { name: "Красный очаровательный", level: "🔴 ОПАСНО", desc: "Саутгемптонский краситель, строго не рекомендуется детям до 12 лет." },
-      "E250": { name: "Нитрит натрия", level: "🔴 ОПАСНО", desc: "Фиксатор окраски в колбасах. При нагревании образует канцерогенные нитрозамины. Нагрузка на сосуды." },
-      "E407": { name: "Каррагинан", level: "🟡 С ОСТОРОЖНОСТЬЮ", desc: "Загуститель. Может вызывать микровоспаления ЖКТ, обостряет гастрит и язвенный колит." },
-      "E330": { name: "Лимонная кислота", level: "🟢 БЕЗОПАСНО", desc: "Природный безопасный антиоксидант и регулятор кислотности." },
-      "E300": { name: "Аскорбиновая кислота (Вит. C)", level: "🟢 БЕЗОПАСНО", desc: "Безопасный природный антиоксидант." },
-      "E951": { name: "Аспартам", level: "🔴 ОПАСНО", desc: "Синтетический подсластитель. При нагреве распадается с выделением метанола. Противопоказан при фенилкетонурии." }
+      // КРАСИТЕЛИ (E100 - E199)
+      "E102": { name: "Тартразин", cat: "Синтетический краситель (желтый)", level: "🔴 ОПАСНО", banned: false, kids: true, desc: "Саутгемптонский краситель. Клинически доказан риск гиперактивности, дефицита внимания (СДВГ) и раздражительности у детей. Мощный триггер аллергии и крапивницы.", sources: "Газировки, леденцы, мороженое, десерты." },
+      "E104": { name: "Желтый хинолиновый", cat: "Синтетический краситель", level: "🔴 ОПАСНО", banned: false, kids: true, desc: "Запрещен в детском питании в ряде стран Европы. Провоцирует аллергические дерматиты и приступы гиперактивности.", sources: "Кондитерские изделия, сладкие напитки, копчености." },
+      "E110": { name: "Желтый «Солнечный закат»", cat: "Азокраситель (оранжевый)", level: "🔴 ОПАСНО", banned: false, kids: true, desc: "Входит в шестерку опасных для детей красителей. Может провоцировать приступы бронхиальной астмы и кожные отеки.", sources: "Детские соки, глазурь, джемы, сырные соусы." },
+      "E120": { name: "Кармин (Кошениль)", cat: "Натуральный краситель (красный)", level: "🟡 С ОСТОРОЖНОСТЬЮ", banned: false, kids: false, desc: "Производится из высушенных насекомых (щитовок). Не подходит веганам и халяль. Является аллергеном для чувствительных людей.", sources: "Крабовые палочки, йогурты, колбасы, помада." },
+      "E121": { name: "Цитрусовый красный 2", cat: "Краситель", level: "⛔️ ЗАПРЕЩЕН В РФ", banned: true, kids: true, desc: "ОФИЦИАЛЬНО ЗАПРЕЩЕН В РОССИИ И ЕАЭС. Тяжелый канцероген, токсичен для мочеполовой системы.", sources: "В легальных продуктах РФ не применяется." },
+      "E122": { name: "Азорубин (Кармуазин)", cat: "Синтетический краситель (красный)", level: "🔴 ОПАСНО", banned: false, kids: true, desc: "Угнетает внимание детей, токсичен при регулярном употреблении. Запрещен в Японии, США, Канаде.", sources: "Мармелад, сиропы, кондитерские кремы." },
+      "E123": { name: "Амарант", cat: "Краситель", level: "⛔️ ЗАПРЕЩЕН В РФ", banned: true, kids: true, desc: "ОФИЦИАЛЬНО ЗАПРЕЩЕН В РФ. Доказана провокация пороков развития плода и поражений печени у животных.", sources: "Запрещен к применению." },
+      "E124": { name: "Понсо 4R (Пунцовый)", cat: "Азокраситель", level: "🔴 ОПАСНО", banned: false, kids: true, desc: "Канцерогенный потенциал. Запрещен в США. В ЕС требует предупредительной надписи на детских товарах.", sources: "Кексы, бисквиты, консервированная вишня." },
+      "E128": { name: "Красный 2G", cat: "Краситель", level: "⛔️ ЗАПРЕЩЕН В РФ", banned: true, kids: true, desc: "ОФИЦИАЛЬНО ЗАПРЕЩЕН В РФ. В кишечнике превращается в анилин — гемолитический яд и канцероген.", sources: "Запрещен в пищевой промышленности." },
+      "E129": { name: "Красный очаровательный АС", cat: "Синтетический краситель", level: "🔴 ОПАСНО", banned: false, kids: true, desc: "Самый частый провокатор синдрома СДВГ и кожных экзем у детей. Запрещен в детском питании во Франции и Германии.", sources: "Детские драже, газировки, сухие завтраки." },
+      "E171": { name: "Диоксид титана", cat: "Белый краситель (наночастицы)", level: "🔴 ОПАСНО", banned: false, kids: true, desc: "Официально признан небезопасным в ЕС из-за генотоксичности (накапливается в клетках и повреждает ДНК). В РФ пока ограничен.", sources: "Белая глазурь, жвачки, зефир, таблетки." },
+
+      // КОНСЕРВАНТЫ (E200 - E299)
+      "E211": { name: "Бензоат натрия", cat: "Химический консервант", level: "🟡 С ОСТОРОЖНОСТЬЮ", banned: false, kids: true, desc: "В сочетании с витамином C (аскорбиновой кислотой E300) образует высокотоксичный канцероген бензол. Угнетает клеточное дыхание.", sources: "Майонезы, соусы, консервы, сладкая газировка." },
+      "E216": { name: "Парагидроксибензоат пропила", cat: "Консервант", level: "⛔️ ЗАПРЕЩЕН В РФ", banned: true, kids: true, desc: "ОФИЦИАЛЬНО ЗАПРЕЩЕН В РФ. Разрушает репродуктивную систему, вызывает эндокринные нарушения.", sources: "Запрещен." },
+      "E217": { name: "Натриевая соль парагидроксибензоата", cat: "Консервант", level: "⛔️ ЗАПРЕЩЕН В РФ", banned: true, kids: true, desc: "ОФИЦИАЛЬНО ЗАПРЕЩЕН В РФ. Токсичен, канцероген.", sources: "Запрещен." },
+      "E220": { name: "Диоксид серы (Сернистый газ)", cat: "Газ-консервант, антиоксидант", level: "🔴 ОПАСНО", banned: false, kids: true, desc: "Сильнейший провокатор тяжелых приступов бронхиальной астмы и аллергии. Разрушает витамин B1 в организме.", sources: "Сухофрукты (курага, изюм), вино, уксус, мясные полуфабрикаты." },
+      "E240": { name: "Формальдегид", cat: "Консервант", level: "⛔️ ТОКСИЧНЫЙ ЯД / ЗАПРЕЩЕН", banned: true, kids: true, desc: "ОФИЦИАЛЬНО ЗАПРЕЩЕН В РФ И МИРЕ. Мутаген, яд, сильнейший канцероген 1-й группы. Разрушает нервную систему и печень.", sources: "В пищевых продуктах РФ категорически запрещен." },
+      "E250": { name: "Нитрит натрия", cat: "Фиксатор окраски, консервант", level: "🔴 ВЫСОКАЯ ОПАСНОСТЬ", banned: false, kids: true, desc: "Придает колбасе розовый цвет. При термической обработке (жарке) образует нитрозамины — доказанные канцерогены ЖКТ. Опасен для сосудов.", sources: "99% колбас, сосисок, бекона, ветчины." },
+      "E251": { name: "Нитрат натрия (Селитра)", cat: "Консервант", level: "🟡 С ОСТОРОЖНОСТЬЮ", banned: false, kids: true, desc: "В кишечнике микрофлора переводит его в нитриты. Нагрузка на сердечно-сосудистую систему и почки.", sources: "Сыры твердые, вяленое мясо, рыба." },
+
+      // АНТИОКСИДАНТЫ (E300 - E399)
+      "E300": { name: "Аскорбиновая кислота", cat: "Натуральный антиоксидант (Вит. С)", level: "🟢 БЕЗОПАСНО", banned: false, kids: false, desc: "Природный витамин C. Предотвращает окисление жиров. Полностью безопасен в физиологических дозах.", sources: "Соки, хлеб, кондитерские изделия." },
+      "E319": { name: "Трет-бутилгидрохинон (TBHQ)", cat: "Синтетический антиоксидант", level: "🔴 ОПАСНО", banned: false, kids: true, desc: "Промышленный консервант жиров. В высоких дозах токсичен для желудка, подозрение на повреждение ДНК у детей.", sources: "Фастфуд, чипсы, сухие смеси для выпечки, лапша БП." },
+      "E320": { name: "Бутилгидроксианизол (BHA)", cat: "Антиоксидант", level: "🔴 ОПАСНО", banned: false, kids: true, desc: "Запрещен в детском питании во многих странах. Эндокринный разрушитель, накапливается в жировой ткани.", sources: "Жевательная резинка, сухие завтраки, маргарины." },
+      "E321": { name: "Бутилгидрокситолуол (BHT)", cat: "Антиоксидант", level: "🔴 ОПАСНО", banned: false, kids: true, desc: "Синтетический аналог витамина E. Токсичен для печени и почек при постоянном употреблении.", sources: "Снеки, жировые смеси, сухие концентраты." },
+      "E322": { name: "Лецитины", cat: "Природный эмульгатор", level: "🟢 БЕЗОПАСНО", banned: false, kids: false, desc: "Ценный фосфолипид (из сои или подсолнечника). Поддерживает печень и мембраны клеток. Осторожно только при аллергии на сою.", sources: "Шоколад, выпечка, маргарин." },
+      "E330": { name: "Лимонная кислота", cat: "Регулятор кислотности", level: "🟢 БЕЗОПАСНО", banned: false, kids: false, desc: "Натуральная органическая кислота клеточного цикла Кребса. В редких случаях раздражает чувствительный желудок при гастрите.", sources: "Напитки, джемы, консервы." },
+      "E338": { name: "Ортофосфорная кислота", cat: "Регулятор кислотности", level: "🟡 С ОСТОРОЖНОСТЬЮ", banned: false, kids: false, desc: "Вымывает кальций из костей и эмали зубов (риск остеопороза после 50 лет). Разрушает слизистую желудка.", sources: "Кола, газированные напитки темного цвета." },
+
+      // СТАБИЛИЗАТОРЫ И ЗАГУСТИТЕЛИ (E400 - E499)
+      "E407": { name: "Каррагинан", cat: "Загуститель из водорослей", level: "🟡 С ОСТОРОЖНОСТЬЮ", banned: false, kids: true, desc: "Провоцирует микровоспаления слизистой кишечника. Строго противопоказан при язвенном колите, гастрите и в детском питании.", sources: "Плавленые сыры, мороженое, сливки, ветчина со шприцеванием." },
+      "E412": { name: "Гуаровая камедь", cat: "Растительная клетчатка", level: "🟢 БЕЗОПАСНО", banned: false, kids: false, desc: "Натуральная растворимая клетчатка из бобов гуара. Безопасна, снижает гликемический индекс пищи.", sources: "Соусы, мороженое, десерты." },
+      "E415": { name: "Ксантановая камедь", cat: "Полисахарид", level: "🟢 БЕЗОПАСНО", banned: false, kids: false, desc: "Продукт естественной ферментации. Безопасна даже для детского и диетического питания.", sources: "Безглютеновый хлеб, майонезы, соусы." },
+      "E450": { name: "Пирофосфаты", cat: "Влагоудерживающий агент", level: "🟡 С ОСТОРОЖНОСТЬЮ", banned: false, kids: false, desc: "Увеличивают вес мясных изделий за счет удержания воды. Нарушают баланс кальция и фосфора, нагрузка на почки.", sources: "Колбасы, сосиски, рыбные палочки, плавленый сыр." },
+      "E476": { name: "Полиглицерин (PGPR)", cat: "Эмульгатор", level: "🟡 С ОСТОРОЖНОСТЬЮ", banned: false, kids: false, desc: "Дешевый синтетический заменитель натурального какао-масла. Позволяет производителю экономить на шоколаде.", sources: "Дешевый плиточный шоколад, глазурь для конфет." },
+
+      // УСИЛИТЕЛИ ВКУСА (E600 - E699)
+      "E621": { name: "Глутамат натрия", cat: "Усилитель вкуса («Умами»)", level: "🟡 С ОСТОРОЖНОСТЬЮ", banned: false, kids: true, desc: "Избыток свободного натрия вызывает задержку воды и скачки артериального давления у гипертоников. Формирует пищевую зависимость у детей.", sources: "Чипсы, сухарики, лапша БП, фастфуд, колбасы." },
+
+      // ПОДСЛАСТИТЕЛИ (E900 - E999)
+      "E950": { name: "Ацесульфам калия", cat: "Синтетический подсластитель", level: "🟡 С ОСТОРОЖНОСТЬЮ", banned: false, kids: true, desc: "В 200 раз слаще сахара. Ухудшает чувствительность к инсулину, нарушает микрофлору кишечника.", sources: "Газировка «0 калорий», жвачки, протеин." },
+      "E951": { name: "Аспартам", cat: "Подсластитель", level: "🔴 ВЫСОКАЯ ОПАСНОСТЬ", banned: false, kids: true, desc: "ВОЗ классифицировала как возможный канцероген (группа 2B). При нагреве выше 30°C распадается с выделением метанола. Противопоказан при фенилкетонурии.", sources: "Диетические напитки, леденцы, йогурты без сахара." },
+      "E952": { name: "Цикламат натрия", cat: "Синтетический подсластитель", level: "🔴 ОПАСНО", banned: false, kids: true, desc: "Запрещен в США из-за риска канцерогенного влияния на мочевой пузырь. В РФ ограничен.", sources: "Дешевые сладкие напитки, сиропы." },
+      "E955": { name: "Сукралоза", cat: "Хлорированный подсластитель", level: "🟡 С ОСТОРОЖНОСТЬЮ", banned: false, kids: false, desc: "В 600 раз слаще сахара. При нагреве в выпечке выше 120°C может выделять токсичные хлорпропанолы.", sources: "Спортивное питание, фитнес-десерты, сиропы." },
+      "E960": { name: "Стевиолгликозиды (Стевия)", cat: "Натуральный подсластитель", level: "🟢 БЕЗОПАСНО", banned: false, kids: false, desc: "Экстракт листьев стевии. Нулевой гликемический индекс, не поднимает сахар, безопасен при диабете.", sources: "ЗОЖ-сладости, натуральные напитки." },
+      "E965": { name: "Мальтит (Мальтитол)", cat: "Сахарный спирт", level: "🟡 С ОСТОРОЖНОСТЬЮ", banned: false, kids: false, desc: "Популярен в «диабетических» шоколадках. Гликемический индекс 35–52 (повышает сахар в крови!). Вызывает сильное вздутие и слабительный эффект.", sources: "Шоколад «без сахара», протеиновые батончики." },
+      "E968": { name: "Эритрит (Дынный сахар)", cat: "Натуральный сахароспирт", level: "🟢 БЕЗОПАСНО", banned: false, kids: false, desc: "Не усваивается организмом, гликемический индекс = 0. Не разрушает зубы, не вызывает брожения.", sources: "Кето-выпечка, премиальные заменители сахара." }
     };
 
     function searchQuickE() {
-      const query = document.getElementById('quickEInput').value.trim().toUpperCase();
+      let query = document.getElementById('quickEInput').value.trim().toUpperCase();
       const res = document.getElementById('quickEResult');
       if (!query) return;
 
-      const item = quickEDatabase[query];
+      if (/^\d+/.test(query)) {
+        query = "E" + query;
+      }
+
       res.style.display = "block";
+      const item = quickEDatabase[query];
+
       if (item) {
+        const badgeColor = item.level.includes("ЗАПРЕЩЕН") || item.level.includes("ОПАСНО")
+          ? "bg-red-500/20 text-red-400 border-red-500/40"
+          : (item.level.includes("БЕЗОПАСНО") ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/40" : "bg-amber-500/20 text-amber-400 border-amber-500/40");
+
         res.innerHTML = `
-          <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-            <span class="font-black text-white text-sm">${query}: ${item.name}</span>
-            <span class="font-extrabold text-[10px] px-2 py-0.5 rounded-full ${item.level.includes('ОПАСНО') ? 'bg-red-500/20 text-red-400' : (item.level.includes('БЕЗОПАСНО') ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400')}">${item.level}</span>
+          <div class="space-y-3">
+            <div class="flex flex-wrap justify-between items-center gap-2 border-b border-slate-800 pb-2.5">
+              <div>
+                <span class="font-black text-white text-base">${query}: ${item.name}</span>
+                <span class="block text-[11px] text-slate-400">${item.cat}</span>
+              </div>
+              <span class="text-[11px] font-black px-3 py-1 rounded-full border ${badgeColor}">${item.level}</span>
+            </div>
+            
+            <div class="space-y-1.5 text-xs text-slate-300 leading-relaxed">
+              <p><b class="text-white">⚠️ Влияние на организм:</b> ${item.desc}</p>
+              <p><b class="text-white">🛒 Где встречается:</b> ${item.sources}</p>
+              ${item.kids ? '<p class="text-red-400 font-bold text-[11px]">👶 Противопоказано детям до 12 лет!</p>' : ''}
+              ${item.banned ? '<p class="text-red-400 font-extrabold text-[11px]">⛔️ Официально изъято из оборота в РФ!</p>' : ''}
+            </div>
+
+            <div class="pt-2 border-t border-slate-800/80 flex justify-between items-center text-[10px] text-slate-500 font-mono">
+              <span>Источник: EFSA / СанПиН РФ</span>
+              <a href="https://t.me/Food_Inspection_bot" target="_blank" class="text-emerald-400 font-bold hover:underline">Проверить весь продукт в боте →</a>
+            </div>
           </div>
-          <p class="text-slate-300 text-xs pt-1">${item.desc}</p>
         `;
       } else {
+        let groupName = "Пищевая добавка";
+        let groupRisk = "Требует внимания к дозировке";
+        let num = parseInt(query.replace(/\D/g, ''), 10);
+
+        if (num >= 100 && num < 200) { groupName = "Пищевой краситель"; groupRisk = "Может влиять на гиперактивность детей и вызывать аллергические реакции кожи."; }
+        else if (num >= 200 && num < 300) { groupName = "Консервант"; groupRisk = "Угнетает бактерии, нагрузка на микрофлору ЖКТ и печень."; }
+        else if (num >= 300 && num < 400) { groupName = "Антиоксидант / Антиокислитель"; groupRisk = "Замедляет порчу жиров, синтетические формы могут перегружать почки."; }
+        else if (num >= 400 && num < 500) { groupName = "Эмульгатор / Стабилизатор структуры"; groupRisk = "Связывает воду и масло, некоторые виды провоцируют раздражение кишечника."; }
+        else if (num >= 600 && num < 700) { groupName = "Усилитель вкуса и аромата"; groupRisk = "Стимулирует аппетит, содержит скрытый натрий (риск для давления)."; }
+        else if (num >= 900 && num < 1000) { groupName = "Подсластитель / Глазирователь"; groupRisk = "Синтетический заменитель сахара, может влиять на инсулиновый отклик."; }
+
         res.innerHTML = `
-          <div class="text-amber-400 font-bold">ℹ️ Добавка ${query} есть в полной базе сервиса</div>
-          <p class="text-slate-400 text-xs">Проверьте продукт целиком через камеру в боте Telegram или MAX!</p>
+          <div class="space-y-2.5">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+              <span class="font-black text-white text-sm">${query}: ${groupName}</span>
+              <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">Классификатор Codex</span>
+            </div>
+            <p class="text-slate-300 text-xs leading-relaxed">
+              Добавка относится к технологической группе <b>«${groupName}»</b>.<br>
+              <b>Особенности группы:</b> ${groupRisk}
+            </p>
+            <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-[11px] text-slate-400">
+              💡 Чтобы узнать точное влияние этого ингредиента на сахарный диабет или детский возраст — сфотографируйте этикетку в боте <b>«ЧтоВнутри?»</b>.
+            </div>
+          </div>
         `;
       }
     }
