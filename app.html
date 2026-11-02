@@ -62,7 +62,7 @@
       <div id="userAvatar" class="w-10 h-10 rounded-full bg-emerald-500 text-white font-bold flex items-center justify-center text-sm shadow">U</div>
       <div>
         <h1 id="userName" class="text-sm font-bold leading-tight">Пользователь</h1>
-        <span id="limitBadge" class="inline-flex items-center text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-2.5 py-0.5 rounded-full mt-0.5">📊 Осталось: проверка...</span>
+        <span id="limitBadge" class="inline-flex items-center text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-2.5 py-0.5 rounded-full mt-0.5">📊 Проверка лимитов...</span>
       </div>
     </div>
     <button type="button" onclick="showTab('pro')" class="px-3.5 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold rounded-full shadow hover:opacity-95 active:scale-95 transition">⭐️ PRO</button>
@@ -71,7 +71,6 @@
   <!-- ВКЛАДКА 1: СКАНЕР -->
   <div id="tab-scanner" style="display: block;" class="p-4 max-w-md mx-auto w-full space-y-4">
     
-    <!-- Выбор цели сканирования -->
     <div class="bg-white dark:bg-slate-900 rounded-2xl p-3 shadow-sm border border-slate-200/60 dark:border-slate-800 space-y-2">
       <div class="flex justify-between items-center px-1">
         <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Кому сканируем:</span>
@@ -80,7 +79,6 @@
       <div id="scannerFamilyChips" class="flex items-center space-x-2 overflow-x-auto hide-scrollbar py-1"></div>
     </div>
 
-    <!-- Главная панель сканера -->
     <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 text-center shadow-sm border border-slate-200/60 dark:border-slate-800 flex flex-col items-center justify-center space-y-4">
       <div class="w-16 h-16 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-500 rounded-full flex items-center justify-center text-3xl">🔍</div>
       <div>
@@ -92,13 +90,12 @@
 
       <div id="loader" style="display: none;" class="flex-col items-center py-3 space-y-2">
         <div class="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
-        <p id="loaderText" class="text-xs font-bold text-emerald-600 dark:text-emerald-400 animate-pulse">Обработка...</p>
+        <p id="loaderText" class="text-xs font-bold text-emerald-600 dark:text-emerald-400 animate-pulse">Ищу товар в базе...</p>
       </div>
 
       <input type="file" id="nativeCameraInput" accept="image/*" capture="camera" style="display: none;" onchange="processFilePhoto(event)">
       <input type="file" id="galleryInput" accept="image/*" style="display: none;" onchange="processFilePhoto(event)">
 
-      <!-- КНОПКА СКАНИРОВАНИЯ (EAN-13 + DATAMATRIX) -->
       <button type="button" onclick="startBarcodeScanner()" class="w-full py-4 bg-gradient-to-r from-emerald-500 to-teal-600 active:scale-95 text-white font-extrabold text-sm rounded-2xl shadow-lg shadow-emerald-500/25 flex items-center justify-center space-x-2 transition cursor-pointer">
         <span class="text-xl">⚡️</span>
         <span>Сканировать штрихкод / Честный ЗНАК</span>
@@ -110,13 +107,12 @@
       </div>
     </div>
 
-    <!-- КАРТОЧКА РЕЗУЛЬТАТА C NOVA И АЛЬТЕРНАТИВОЙ -->
+    <!-- КАРТОЧКА РЕЗУЛЬТАТА -->
     <div id="resultCard" style="display: none;" class="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-200/60 dark:border-slate-800 space-y-3.5">
       
       <div class="flex items-center justify-between border-b pb-2.5 border-slate-100 dark:border-slate-800">
         <div>
           <h3 id="productTitle" class="text-xs font-bold text-slate-400 uppercase tracking-wider">Вердикт безопасности</h3>
-          <!-- БЕЙДЖ ШКАЛЫ NOVA -->
           <div id="novaBadge" style="display: none;" class="mt-1"></div>
         </div>
         <span id="badgeVerdict" class="text-xs px-2.5 py-0.5 rounded-full font-bold"></span>
@@ -124,19 +120,18 @@
 
       <div id="resultText" class="text-xs space-y-2 leading-relaxed text-slate-800 dark:text-slate-200 whitespace-pre-line font-medium"></div>
 
-      <!-- БЛОК СКИМПФЛЯЦИИ -->
       <div id="staleActionBlock" style="display: none;" class="pt-2 border-t border-slate-100 dark:border-slate-800">
-        <button type="button" onclick="startLiveCamera()" class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow active:scale-95 transition">
-          📸 Сфотографировать свежую этикетку
+        <button type="button" onclick="startLiveCamera()" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-90 text-white font-extrabold text-xs rounded-xl shadow-lg shadow-emerald-500/20 active:scale-95 transition flex items-center justify-center gap-2">
+          <span>📸</span>
+          <span>Сфотографировать состав этикетки</span>
         </button>
       </div>
 
     </div>
   </div>
 
-  <!-- ВКЛАДКА 2: СЕМЬЯ (СПИСОК И РЕДАКТОР) -->
+  <!-- ВКЛАДКА 2: СЕМЬЯ -->
   <div id="tab-family" style="display: none;" class="p-4 max-w-md mx-auto w-full space-y-4">
-    <!-- Список членов семьи -->
     <div id="familyListView" class="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-200/60 dark:border-slate-800 space-y-4">
       <div class="flex justify-between items-center">
         <div><h2 class="text-base font-bold">👨‍👩‍👧 Семья и профили</h2><p class="text-xs text-slate-400">Настройте здоровье для каждого</p></div>
@@ -145,7 +140,7 @@
       <div id="familyMembersList" class="space-y-2.5 pt-1"></div>
     </div>
 
-    <!-- Редактор анкеты здоровья -->
+    <!-- Редактор анкеты -->
     <div id="familyEditView" style="display: none;" class="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-200/60 dark:border-slate-800 space-y-4">
       <div class="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-slate-800">
         <div class="flex items-center space-x-2">
@@ -178,10 +173,10 @@
       <div class="space-y-2 pt-1">
         <span class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Диеты:</span>
         <div class="grid grid-cols-2 gap-2">
-          <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 cursor-pointer"><span class="text-xs font-bold">🌾 Без глютена</span><input type="checkbox" id="chk_gluten" class="w-4 h-4 accent-emerald-500"></label>
-          <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 cursor-pointer"><span class="text-xs font-bold">🥛 Без лактозы</span><input type="checkbox" id="chk_lactose" class="w-4 h-4 accent-emerald-500"></label>
-          <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 cursor-pointer"><span class="text-xs font-bold">🌱 Веган</span><input type="checkbox" id="chk_vegan" class="w-4 h-4 accent-emerald-500"></label>
-          <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 cursor-pointer"><span class="text-xs font-bold">🌙 Халяль</span><input type="checkbox" id="chk_halal" class="w-4 h-4 accent-emerald-500"></label>
+          <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 cursor-pointer"><span class="text-xs font-bold">🌾 Без глютена</span><input type="checkbox" id="chk_gluten" class="w-4 h-4 accent-emerald-500"></label>
+          <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 cursor-pointer"><span class="text-xs font-bold">🥛 Без лактозы</span><input type="checkbox" id="chk_lactose" class="w-4 h-4 accent-emerald-500"></label>
+          <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 cursor-pointer"><span class="text-xs font-bold">🌱 Веган</span><input type="checkbox" id="chk_vegan" class="w-4 h-4 accent-emerald-500"></label>
+          <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 cursor-pointer"><span class="text-xs font-bold">🌙 Халяль</span><input type="checkbox" id="chk_halal" class="w-4 h-4 accent-emerald-500"></label>
         </div>
       </div>
 
@@ -192,7 +187,6 @@
 
       <div class="space-y-2 pt-2">
         <button type="button" id="btnSaveProfile" onclick="saveActiveMemberProfile()" class="w-full py-3.5 bg-emerald-500 text-white font-bold text-xs rounded-xl shadow active:scale-98 transition">💾 Сохранить в базу Supabase</button>
-        <!-- КНОПКА УДАЛЕНИЯ ЧЛЕНА СЕМЬИ -->
         <div id="deleteMemberBtnContainer" style="display: none;">
           <button type="button" onclick="removeMember(currentEditingMember)" class="w-full py-2.5 bg-red-50 hover:bg-red-100 text-red-600 font-bold text-xs rounded-xl border border-red-200 active:scale-95 transition">
             🗑 Удалить этот профиль
@@ -260,7 +254,7 @@
   </nav>
 
   <script>
-    const N8N_WEBHOOK_URL = "https://zloy4elovek0.app.n8n.cloud/webhook/scan";
+    const N8N_WEBHOOK_URL = "https://denth.app.n8n.cloud/webhook/scan";
     const tg = window.Telegram?.WebApp;
     const maxApp = window.max || window.MAXApp;
     
@@ -272,6 +266,7 @@
     let familyMembers = ["Я"];
     let activeScannerTarget = "Я"; 
     let currentEditingMember = "Я"; 
+    let lastScannedBarcode = "";
 
     function showTab(name) {
       ['scanner', 'family', 'about', 'pro'].forEach(t => {
@@ -468,7 +463,10 @@
         btn.innerText = "💾 Сохранить в базу"; btn.disabled = false;
         alert(`✅ Профиль «${currentEditingMember}» сохранён!`);
         closeEditMemberView();
-      } catch(e) { btn.innerText = "💾 Сохранить в базу"; btn.disabled = false; alert("Сохранено локально."); }
+      } catch(e) {
+        btn.innerText = "💾 Сохранить в базу"; btn.disabled = false;
+        alert("Сохранено локально на устройстве.");
+      }
     }
 
     function buildHealthCommentForAI() {
@@ -488,8 +486,6 @@
     function parseScannedCode(rawCode) {
       if (!rawCode) return "";
       let code = rawCode.trim();
-
-      // Если это DataMatrix Честного ЗНАКа (начинается с 01 + 14 цифр GTIN)
       if (code.startsWith("01") && code.length >= 16) {
         let gtin = code.substring(2, 16);
         if (gtin.startsWith("0")) {
@@ -502,7 +498,9 @@
 
     async function sendBarcodeToN8n(barcode) {
       const cleanBarcode = parseScannedCode(barcode);
-      document.getElementById('loaderText').innerText = "Ищу товар...";
+      lastScannedBarcode = cleanBarcode; // Запоминаем для связи со снимком при ненайденном товаре
+      
+      document.getElementById('loaderText').innerText = "Ищу товар " + cleanBarcode + "...";
       document.getElementById('loader').style.display = 'flex';
       document.getElementById('resultCard').style.display = 'none';
       try {
@@ -516,14 +514,19 @@
     }
 
     async function sendPhotoToN8n(base64Image) {
-      document.getElementById('loaderText').innerText = "ИИ читает состав...";
+      document.getElementById('loaderText').innerText = "ИИ читает состав с фото...";
       document.getElementById('loader').style.display = 'flex';
       document.getElementById('resultCard').style.display = 'none';
       try {
         const res = await fetch(N8N_WEBHOOK_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ image: base64Image, chat_id: userId, comment: buildHealthCommentForAI() })
+          body: JSON.stringify({ 
+            image: base64Image, 
+            chat_id: userId, 
+            comment: buildHealthCommentForAI(),
+            barcode: lastScannedBarcode || null // Передаем штрихкод, чтобы бэкенд записал состав в кэш!
+          })
         });
         handleServerResponse(await res.json());
       } catch(e) { showResult("⚠️ Ошибка сети", "Не удалось отправить снимок."); }
@@ -532,7 +535,7 @@
     function handleServerResponse(data) {
       document.getElementById('loader').style.display = 'none';
       const staleBlock = document.getElementById('staleActionBlock');
-      staleBlock.style.display = 'none';
+      if (staleBlock) staleBlock.style.display = 'none';
 
       if (data.limit_exceeded) {
         alert(data.message || "⏳ Лимит проверок на сегодня исчерпан!");
@@ -545,11 +548,11 @@
       if (data.is_stale) {
         showResult(
           "🟡 ТРЕБУЕТ ОБНОВЛЕНИЯ",
-          `Товар «${data.product_name || "Продукт"}» проверялся более 30 дней назад.\n\n⚠️ Производители часто меняют рецептуру. Чтобы вердикт был на 100% точным, сфотографируйте состав прямо сейчас!`,
+          `Товар «${data.product_name || "Продукт"}» проверялся более 30 дней назад.\n\n⚠️ Производители часто меняют рецептуру. Сфотографируйте состав прямо сейчас!`,
           data.product_name,
           data.nova
         );
-        staleBlock.style.display = 'block';
+        if (staleBlock) staleBlock.style.display = 'block';
         return;
       }
 
@@ -558,9 +561,21 @@
         if (data.result.includes("ОПАСНО") || data.result.includes("НЕЛЬЗЯ") || data.result.includes("ВРЕДНО")) verdict = "🔴 ОПАСНО";
         else if (data.result.includes("НЕЙТРАЛЬНО") || data.result.includes("ОСТОРОЖНОСТЬЮ")) verdict = "🟡 НЕЙТРАЛЬНО";
         showResult(verdict, data.result, data.product_name, data.nova);
-      } else { 
-        showResult("⚠️ Ошибка", data.error || "Не удалось получить состав продукта."); 
+        return;
       }
+
+      // Если товара нет нигде в базах — выводим предложение сделать фото состава, чтобы обучить базу!
+      if (data.not_found || !data.ok) {
+        showResult(
+          "📦 НОВЫЙ ТОВАР",
+          `Этого товара ещё нет в базе штрихкодов.\n\n💡 Нажмите кнопку ниже и сфотографируйте текст состава на упаковке — искусственный интеллект разберёт его и навсегда сохранит в базу для вас и других пользователей!`,
+          "Штрихкод: " + (lastScannedBarcode || "неизвестен")
+        );
+        if (staleActionBlock) staleActionBlock.style.display = 'block';
+        return;
+      }
+
+      showResult("⚠️ Ошибка", data.error || data.message || "Не удалось получить состав продукта.");
     }
 
     function updateLimitBadge(left) {
@@ -582,7 +597,7 @@
       const novaEl = document.getElementById('novaBadge');
 
       badgeEl.innerText = badge;
-      badgeEl.className = badge.includes("ОПАСНО") ? "text-xs px-2.5 py-0.5 rounded-full font-bold bg-red-100 text-red-700" : (badge.includes("НЕЙТРАЛЬНО") || badge.includes("ОБНОВЛЕНИЯ") ? "text-xs px-2.5 py-0.5 rounded-full font-bold bg-amber-100 text-amber-700" : "text-xs px-2.5 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-700");
+      badgeEl.className = badge.includes("ОПАСНО") ? "text-xs px-2.5 py-0.5 rounded-full font-bold bg-red-100 text-red-700" : (badge.includes("НЕЙТРАЛЬНО") || badge.includes("ОБНОВЛЕНИЯ") || badge.includes("НОВЫЙ") ? "text-xs px-2.5 py-0.5 rounded-full font-bold bg-amber-100 text-amber-700" : "text-xs px-2.5 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-700");
       
       document.getElementById('productTitle').innerText = title || ("Вердикт (" + (activeScannerTarget === "ALL" ? "Вся семья" : activeScannerTarget) + ")");
       document.getElementById('resultText').innerText = text;
@@ -616,7 +631,6 @@
       }
     }
 
-    // АППАРАТНЫЙ СКАНЕР: ПОДДЕРЖКА EAN-13 И DATAMATRIX (ЧЕСТНЫЙ ЗНАК)
     async function startBarcodeScanner() {
       document.getElementById('barcodeModal').style.display = 'flex';
       try {
