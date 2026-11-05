@@ -26,13 +26,13 @@
 </head>
 <body class="min-h-screen flex flex-col font-sans pb-24">
 
-  <!-- МОДАЛЬНОЕ ОКНО ДЛЯ ПОЛЬЗОВАТЕЛЕЙ ОБЫЧНОГО БРАУЗЕРА -->
+  <!-- МОДАЛЬНОЕ ОКНО ДЛЯ ГОСТЕЙ ИЗ ОБЫЧНОГО ПК БРАУЗЕРА -->
   <div id="webWarningModal" style="display: none;" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 text-center max-w-sm w-full space-y-4 shadow-2xl">
       <span class="text-4xl block">🛡️</span>
       <h3 class="text-base font-black text-slate-900 dark:text-white">Откройте через мессенджер</h3>
       <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-        В обычном браузере история проверок и семейный профиль не сохраняются. Запустите сканер в мессенджере — ваши лимиты и здоровье будут под защитой:
+        Для сохранения лимитов и профиля здоровья запустите сканер через Telegram или MAX:
       </p>
       <div class="space-y-2 pt-2">
         <a href="https://t.me/Food_Inspection_bot" class="w-full py-3 bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition">
@@ -42,7 +42,7 @@
           <span>💬 Открыть в MAX</span>
         </a>
         <button type="button" onclick="document.getElementById('webWarningModal').style.display='none'" class="text-[11px] text-slate-400 underline pt-1 block mx-auto">
-          Продолжить как гость (лимиты могут сбрасываться)
+          Продолжить как гость
         </button>
       </div>
     </div>
@@ -93,7 +93,6 @@
   <!-- ВКЛАДКА 1: СКАНЕР -->
   <div id="tab-scanner" style="display: block;" class="p-4 max-w-md mx-auto w-full space-y-4">
     
-    <!-- Выбор цели сканирования -->
     <div class="bg-white dark:bg-slate-900 rounded-2xl p-3 shadow-sm border border-slate-200/60 dark:border-slate-800 space-y-2">
       <div class="flex justify-between items-center px-1">
         <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Кому сканируем:</span>
@@ -102,7 +101,6 @@
       <div id="scannerFamilyChips" class="flex items-center space-x-2 overflow-x-auto hide-scrollbar py-1"></div>
     </div>
 
-    <!-- Главная панель сканера -->
     <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 text-center shadow-sm border border-slate-200/60 dark:border-slate-800 flex flex-col items-center justify-center space-y-4">
       <div class="w-16 h-16 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-500 rounded-full flex items-center justify-center text-3xl">🔍</div>
       <div>
@@ -244,7 +242,7 @@
     </div>
   </div>
 
-  <!-- ВКЛАДКА 4: PRO (СТРОГО В РУБЛЯХ БЕЗ ЗВЁЗД) -->
+  <!-- ВКЛАДКА 4: PRO (ФИКСИРОВАННЫЕ ЦЕНЫ PRODAMUS) -->
   <div id="tab-pro" style="display: none;" class="p-4 max-w-md mx-auto w-full space-y-4">
     <div class="bg-gradient-to-br from-amber-500 to-orange-600 rounded-3xl p-6 text-white text-center shadow-lg space-y-4">
       <div class="text-4xl">👑</div>
@@ -282,17 +280,28 @@
     const N8N_WEBHOOK_URL = "https://KakToTak.app.n8n.cloud/webhook/scan";
     const urlParams = new URLSearchParams(window.location.search);
 
-    // 1. НАДЕЖНОЕ ОПРЕДЕЛЕНИЕ ПЛАТФОРМЫ И ID
+    // 1. ПЕРЕХВАТ СИНЕЙ КНОПКИ ВНУТРИ MAX И МГНОВЕННЫЙ ВЫХОД В БРАУЗЕР
+    const maxBridgeUser = window.WebApp?.initDataUnsafe?.user;
+    if (maxBridgeUser && maxBridgeUser.id && !urlParams.get('in_browser')) {
+      const targetUrl = `https://www.sostav-scan.ru/app.html?user_id=${maxBridgeUser.id}&platform=max&in_browser=1`;
+      if (typeof window.WebApp.openLink === 'function') {
+        window.WebApp.openLink(targetUrl);
+        window.WebApp.close();
+      } else {
+        window.location.href = targetUrl;
+      }
+    }
+
+    // 2. ОПРЕДЕЛЕНИЕ ПЛАТФОРМЫ И ID
     const isTelegramEnv = !!(window.Telegram?.WebApp?.initData && window.Telegram.WebApp.initData.length > 0);
     const tg = isTelegramEnv ? window.Telegram.WebApp : null;
 
     let tgUserId = tg?.initDataUnsafe?.user?.id ? String(tg.initDataUnsafe.user.id) : null;
-    let maxUserId = urlParams.get('user_id') || urlParams.get('max_user_id') || null;
+    let maxUserId = urlParams.get('user_id') || urlParams.get('max_user_id') || (maxBridgeUser?.id ? String(maxBridgeUser.id) : null);
     let platform = urlParams.get('platform') || (isTelegramEnv ? 'tg' : (maxUserId ? 'max' : 'web'));
 
     let userId = tgUserId || maxUserId;
 
-    // Если человек зашел с обычного браузера без мессенджера
     if (!userId) {
       let guestId = localStorage.getItem('food_scanner_guest_id');
       if (!guestId) {
@@ -309,7 +318,7 @@
 
     try {
       if (tg) { tg.expand(); tg.ready(); }
-      if (window.max?.ready) { window.max.ready(); }
+      if (window.WebApp?.ready) { window.WebApp.ready(); }
     } catch(e) {}
 
     let currentStream = null;
@@ -675,15 +684,16 @@
       card.style.display = 'block';
     }
 
-    // 2. ИСПРАВЛЕННАЯ ОПЛАТА: ТЕЛЕГРАМ В ТЕЛЕГРАМЕ, МАКС В МАКСЕ (СТРОГО В РУБЛЯХ ЧЕРЕЗ PRODAMUS)
+    // 3. ИСПРАВЛЕННАЯ ОПЛАТА С ЖЕСТКОЙ ФИКСАЦИЕЙ СУММЫ В PRODAMUS
     function buyProPlan(days, priceRub) {
       if (isTelegramEnv && tg) {
         tg.openTelegramLink(`https://t.me/Food_Inspection_bot?start=pro_${days}`);
         tg.close();
       } else {
-        // Для MAX и Web открываем официальную защищенную кассу Prodamus с привязкой ID
+        // Передаем sum, products[0][quantity], products[0][sum], чтобы сумма встала намертво!
         const customerExtra = `${userId}_${days}`;
-        const payUrl = `https://foodscanner.payform.ru?products[0][name]=PRO-подписка (${days} дней)&products[0][price]=${priceRub}&customer_extra=${encodeURIComponent(customerExtra)}`;
+        const prodName = encodeURIComponent(`PRO-подписка (${days} дней)`);
+        const payUrl = `https://foodscanner.payform.ru?sum=${priceRub}&products[0][name]=${prodName}&products[0][price]=${priceRub}&products[0][quantity]=1&products[0][sum]=${priceRub}&customer_extra=${encodeURIComponent(customerExtra)}`;
         window.open(payUrl, '_blank');
       }
     }
