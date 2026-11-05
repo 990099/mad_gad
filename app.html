@@ -26,7 +26,29 @@
 </head>
 <body class="min-h-screen flex flex-col font-sans pb-24">
 
-  <!-- ОКНО СКАНЕРА ШТРИХКОДОВ И ЧЕСТНОГО ЗНАКА (DATAMATRIX) -->
+  <!-- МОДАЛЬНОЕ ОКНО ДЛЯ ПОЛЬЗОВАТЕЛЕЙ ОБЫЧНОГО БРАУЗЕРА -->
+  <div id="webWarningModal" style="display: none;" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 text-center max-w-sm w-full space-y-4 shadow-2xl">
+      <span class="text-4xl block">🛡️</span>
+      <h3 class="text-base font-black text-slate-900 dark:text-white">Откройте через мессенджер</h3>
+      <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+        В обычном браузере история проверок и семейный профиль не сохраняются. Запустите сканер в мессенджере — ваши лимиты и здоровье будут под защитой:
+      </p>
+      <div class="space-y-2 pt-2">
+        <a href="https://t.me/Food_Inspection_bot" class="w-full py-3 bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition">
+          <span>✈️ Открыть в Telegram</span>
+        </a>
+        <a href="https://max.ru/se14837453_bot" class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition">
+          <span>💬 Открыть в MAX</span>
+        </a>
+        <button type="button" onclick="document.getElementById('webWarningModal').style.display='none'" class="text-[11px] text-slate-400 underline pt-1 block mx-auto">
+          Продолжить как гость (лимиты могут сбрасываться)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ОКНО СКАНЕРА ШТРИХКОДОВ И ЧЕСТНОГО ЗНАКА -->
   <div id="barcodeModal" style="display: none;" class="fixed inset-0 z-50 bg-black flex flex-col justify-between p-4">
     <div class="w-full flex justify-between items-center text-white pt-2 px-2 z-20">
       <span class="text-xs font-bold tracking-wider bg-black/60 px-3 py-1.5 rounded-full backdrop-blur-md">⚡️ Штрихкод или Честный ЗНАК</span>
@@ -98,7 +120,6 @@
       <input type="file" id="nativeCameraInput" accept="image/*" capture="camera" style="display: none;" onchange="processFilePhoto(event)">
       <input type="file" id="galleryInput" accept="image/*" style="display: none;" onchange="processFilePhoto(event)">
 
-      <!-- КНОПКА СКАНИРОВАНИЯ (EAN-13 + DATAMATRIX) -->
       <button type="button" onclick="startBarcodeScanner()" class="w-full py-4 bg-gradient-to-r from-emerald-500 to-teal-600 active:scale-95 text-white font-extrabold text-sm rounded-2xl shadow-lg shadow-emerald-500/25 flex items-center justify-center space-x-2 transition cursor-pointer">
         <span class="text-xl">⚡️</span>
         <span>Сканировать штрихкод / Честный ЗНАК</span>
@@ -110,9 +131,8 @@
       </div>
     </div>
 
-    <!-- КАРТОЧКА РЕЗУЛЬТАТА C NOVA И АЛЬТЕРНАТИВОЙ -->
+    <!-- КАРТОЧКА РЕЗУЛЬТАТА -->
     <div id="resultCard" style="display: none;" class="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-200/60 dark:border-slate-800 space-y-3.5">
-      
       <div class="flex items-center justify-between border-b pb-2.5 border-slate-100 dark:border-slate-800">
         <div>
           <h3 id="productTitle" class="text-xs font-bold text-slate-400 uppercase tracking-wider">Вердикт безопасности</h3>
@@ -123,14 +143,12 @@
 
       <div id="resultText" class="text-xs space-y-2 leading-relaxed text-slate-800 dark:text-slate-200 whitespace-pre-line font-medium"></div>
 
-      <!-- КНОПКА СФОТОГРАФИРОВАТЬ ЭТИКЕТКУ -->
       <div id="staleActionBlock" style="display: none;" class="pt-2 border-t border-slate-100 dark:border-slate-800">
         <button type="button" onclick="startLiveCamera()" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-90 text-white font-extrabold text-xs rounded-xl shadow-lg shadow-emerald-500/20 active:scale-95 transition flex items-center justify-center gap-2">
           <span>📸</span>
           <span>Сфотографировать состав этикетки</span>
         </button>
       </div>
-
     </div>
   </div>
 
@@ -190,7 +208,7 @@
       </div>
 
       <div class="space-y-2 pt-2">
-        <button type="button" id="btnSaveProfile" onclick="saveActiveMemberProfile()" class="w-full py-3.5 bg-emerald-500 text-white font-bold text-xs rounded-xl shadow active:scale-98 transition">💾 Сохранить в базу Supabase</button>
+        <button type="button" id="btnSaveProfile" onclick="saveActiveMemberProfile()" class="w-full py-3.5 bg-emerald-500 text-white font-bold text-xs rounded-xl shadow active:scale-98 transition">💾 Сохранить в базу</button>
         <div id="deleteMemberBtnContainer" style="display: none;">
           <button type="button" onclick="removeMember(currentEditingMember)" class="w-full py-2.5 bg-red-50 hover:bg-red-100 text-red-600 font-bold text-xs rounded-xl border border-red-200 active:scale-95 transition">
             🗑 Удалить этот профиль
@@ -206,84 +224,93 @@
       <div class="text-center pb-2 border-b border-slate-100 dark:border-slate-800">
         <span class="text-3xl">🛡️</span>
         <h2 class="text-base font-black mt-1">О проекте Food Scanner</h2>
-        <p class="text-slate-400 text-[11px]">Ваш личный эксперт безопасности у полки магазина</p>
+        <p class="text-slate-400 text-[11px]">Эксперт по безопасности составов в супермаркете</p>
       </div>
       <div>
-        <h3 class="font-bold text-emerald-600 dark:text-emerald-400 text-sm mb-1">📸 Почему фото состава — самый точный способ?</h3>
+        <h3 class="font-bold text-emerald-600 dark:text-emerald-400 text-sm mb-1">📸 Фото этикетки против штрихкода</h3>
         <p class="text-slate-600 dark:text-slate-300">
-          Штрихкод и маркировка — это цифры. Завод может изменить рецептуру, не меняя код. <b>Фотография реального состава на обороте пачки гарантирует 100% точность</b> — искусственный интеллект читает свежие буквы в реальном времени.
-        </p>
-      </div>
-      <div>
-        <h3 class="font-bold text-emerald-600 dark:text-emerald-400 text-sm mb-1">🏷 Сканирование «Честный ЗНАК»</h3>
-        <p class="text-slate-600 dark:text-slate-300">
-          Вы можете наводить камеру не только на полоски, но и на квадратный DataMatrix-код на крышках молока, сыра или воды — сканер мгновенно распознает товар.
+          Производители меняют состав без изменения штрихкода. Фото состава упаковки дает 100% гарантию актуальности.
         </p>
       </div>
       <div>
-        <h3 class="font-bold text-emerald-600 dark:text-emerald-400 text-sm mb-1">🔬 Шкала переработки NOVA (1–4)</h3>
+        <h3 class="font-bold text-emerald-600 dark:text-emerald-400 text-sm mb-1">🏷 Коды «Честный ЗНАК»</h3>
         <p class="text-slate-600 dark:text-slate-300">
-          Сервис оценивает уровень ультрапереработки (UPF) по стандартам ВОЗ: от цельных продуктов (NOVA 1) до промышленных суррогатов (NOVA 4).
+          Сканер мгновенно распознает DataMatrix-коды на молочной продукции, воде и сырах.
         </p>
       </div>
-      <div class="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 text-[11px] border border-amber-200/60 dark:border-amber-800/50 space-y-1">
-        <p class="font-bold flex items-center gap-1"><span>⚠️</span> Важное уведомление (Дисклеймер):</p>
-        <p class="opacity-90 leading-relaxed">
-          Сервис носит рекомендательный характер и не является медицинским диагнозом. При наличии тяжелых аллергий всегда лично сверяйтесь с текстом на упаковке.
-        </p>
+      <div class="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 text-[11px] border border-amber-200/60 dark:border-amber-800/50">
+        ⚠️ Сервис носит рекомендательный характер и не является медицинской консультацией.
       </div>
     </div>
   </div>
 
-  <!-- ВКЛАДКА 4: PRO -->
+  <!-- ВКЛАДКА 4: PRO (СТРОГО В РУБЛЯХ БЕЗ ЗВЁЗД) -->
   <div id="tab-pro" style="display: none;" class="p-4 max-w-md mx-auto w-full space-y-4">
     <div class="bg-gradient-to-br from-amber-500 to-orange-600 rounded-3xl p-6 text-white text-center shadow-lg space-y-4">
       <div class="text-4xl">👑</div>
-      <div><h2 class="text-lg font-black">PRO-безлимит</h2><p class="text-xs opacity-90 mt-1">Проверяйте составы для всей семьи без лимитов</p></div>
-      <div class="space-y-2 text-left pt-2">
-        <button type="button" onclick="buyProPlan(30)" class="w-full p-3 bg-white rounded-xl flex justify-between text-xs font-bold text-orange-600 active:scale-95 transition"><span>1 месяц</span><span>150 ⭐ / 290 ₽</span></button>
-        <button type="button" onclick="buyProPlan(60)" class="w-full p-3 bg-white rounded-xl flex justify-between text-xs font-bold text-orange-600 active:scale-95 transition"><span>2 месяца (-10%)</span><span>270 ⭐ / 520 ₽</span></button>
-        <button type="button" onclick="buyProPlan(90)" class="w-full p-3 bg-white rounded-xl flex justify-between text-xs font-bold text-orange-600 active:scale-95 transition"><span>3 месяца (-15%)</span><span>380 ⭐ / 740 ₽</span></button>
-        <button type="button" onclick="buyProPlan(180)" class="w-full p-3 bg-white rounded-xl flex justify-between text-xs font-bold text-orange-600 border-2 border-yellow-300 active:scale-95 transition"><span>6 месяцев (Семья) (-25%)</span><span>675 ⭐ / 1 290 ₽</span></button>
+      <div><h2 class="text-lg font-black">PRO-безлимит</h2><p class="text-xs opacity-90 mt-1">Проверяйте составы для всей семьи без ограничений</p></div>
+      <div class="space-y-2.5 text-left pt-2">
+        <button type="button" onclick="buyProPlan(30, 290)" class="w-full p-3.5 bg-white rounded-xl flex justify-between items-center text-xs font-bold text-slate-800 active:scale-95 transition shadow">
+          <span>1 месяц</span>
+          <span class="text-emerald-600 font-extrabold text-sm">290 ₽</span>
+        </button>
+        <button type="button" onclick="buyProPlan(60, 520)" class="w-full p-3.5 bg-white rounded-xl flex justify-between items-center text-xs font-bold text-slate-800 active:scale-95 transition shadow">
+          <span>2 месяца <span class="text-[10px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded">-10%</span></span>
+          <span class="text-emerald-600 font-extrabold text-sm">520 ₽</span>
+        </button>
+        <button type="button" onclick="buyProPlan(90, 740)" class="w-full p-3.5 bg-white rounded-xl flex justify-between items-center text-xs font-bold text-slate-800 active:scale-95 transition shadow">
+          <span>3 месяца <span class="text-[10px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded">-15%</span></span>
+          <span class="text-emerald-600 font-extrabold text-sm">740 ₽</span>
+        </button>
+        <button type="button" onclick="buyProPlan(180, 1290)" class="w-full p-3.5 bg-white rounded-xl flex justify-between items-center text-xs font-bold text-slate-800 border-2 border-yellow-300 active:scale-95 transition shadow">
+          <span>6 месяцев (Семья) <span class="text-[10px] bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded font-black">ХИТ -25%</span></span>
+          <span class="text-emerald-600 font-extrabold text-sm">1 290 ₽</span>
+        </button>
       </div>
     </div>
   </div>
 
-  <!-- НИЖНЯЯ ПАНЕЛЬ -->
+  <!-- НАВИГАЦИЯ -->
   <nav class="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex justify-around py-2 max-w-md mx-auto z-40">
     <button type="button" onclick="showTab('scanner')" id="btn-scanner" class="flex flex-col items-center text-emerald-500 font-bold text-[10px]"><span class="text-lg">📸</span><span>Сканер</span></button>
     <button type="button" onclick="showTab('family')" id="btn-family" class="flex flex-col items-center text-slate-400 font-medium text-[10px]"><span class="text-lg">👨‍👩‍👧</span><span>Семья</span></button>
-    <button type="button" onclick="showTab('about')" id="btn-about" class="flex flex-col items-center text-slate-400 font-medium text-[10px]"><span class="text-lg">ℹ️</span><span>О приложении</span></button>
+    <button type="button" onclick="showTab('about')" id="btn-about" class="flex flex-col items-center text-slate-400 font-medium text-[10px]"><span class="text-lg">ℹ️</span><span>О сервисе</span></button>
     <button type="button" onclick="showTab('pro')" id="btn-pro" class="flex flex-col items-center text-slate-400 font-medium text-[10px]"><span class="text-lg">⭐️</span><span>PRO</span></button>
   </nav>
 
   <script>
     const N8N_WEBHOOK_URL = "https://KakToTak.app.n8n.cloud/webhook/scan";
-    const tg = window.Telegram?.WebApp;
-    const maxApp = window.max || window.MAXApp;
-    
-    // БЕЗОПАСНОЕ ОПРЕДЕЛЕНИЕ ID ПОЛЬЗОВАТЕЛЯ
-    let urlParams = new URLSearchParams(window.location.search);
-    
-    let tgUserId = tg?.initDataUnsafe?.user?.id;
-    let maxUserId = urlParams.get('max_user_id') || urlParams.get('user_id');
-    if (maxUserId && /^\d+$/.test(maxUserId)) {
-      maxUserId = parseInt(maxUserId, 10);
-    } else {
-      maxUserId = null;
+    const urlParams = new URLSearchParams(window.location.search);
+
+    // 1. НАДЕЖНОЕ ОПРЕДЕЛЕНИЕ ПЛАТФОРМЫ И ID
+    const isTelegramEnv = !!(window.Telegram?.WebApp?.initData && window.Telegram.WebApp.initData.length > 0);
+    const tg = isTelegramEnv ? window.Telegram.WebApp : null;
+
+    let tgUserId = tg?.initDataUnsafe?.user?.id ? String(tg.initDataUnsafe.user.id) : null;
+    let maxUserId = urlParams.get('user_id') || urlParams.get('max_user_id') || null;
+    let platform = urlParams.get('platform') || (isTelegramEnv ? 'tg' : (maxUserId ? 'max' : 'web'));
+
+    let userId = tgUserId || maxUserId;
+
+    // Если человек зашел с обычного браузера без мессенджера
+    if (!userId) {
+      let guestId = localStorage.getItem('food_scanner_guest_id');
+      if (!guestId) {
+        guestId = String(Math.floor(900000000 + Math.random() * 90000000));
+        localStorage.setItem('food_scanner_guest_id', guestId);
+      }
+      userId = guestId;
+      platform = 'web';
+      setTimeout(() => {
+        const warn = document.getElementById('webWarningModal');
+        if (warn) warn.style.display = 'flex';
+      }, 1000);
     }
-    
-    // Для гостей из обычных браузеров создаем уникальный 9-значный BIGINT ID для Supabase
-    let localGuestId = localStorage.getItem('food_scanner_guest_id');
-    if (!localGuestId) {
-      localGuestId = Math.floor(900000000 + Math.random() * 90000000);
-      localStorage.setItem('food_scanner_guest_id', localGuestId);
-    } else {
-      localGuestId = parseInt(localGuestId, 10);
-    }
-    
-    // НИКАКОЙ ПОДСТАНОВКИ ВАШЕГО АДМИНСКОГО ID ДЛЯ ЧУЖИХ ЛЮДЕЙ!
-    const userId = tgUserId || maxUserId || localGuestId;
+
+    try {
+      if (tg) { tg.expand(); tg.ready(); }
+      if (window.max?.ready) { window.max.ready(); }
+    } catch(e) {}
 
     let currentStream = null;
     let html5QrScanner = null;
@@ -309,11 +336,6 @@
       if (name === 'scanner') renderScannerChips();
     }
 
-    try { 
-      if (tg) { tg.expand(); tg.ready(); }
-      if (maxApp?.ready) { maxApp.ready(); }
-    } catch(e) {}
-
     loadFamilyMembers();
     renderScannerChips();
     fetchRealLimit();
@@ -323,14 +345,14 @@
         const res = await fetch(N8N_WEBHOOK_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: "get_limits", chat_id: userId })
+          body: JSON.stringify({ action: "get_limits", chat_id: userId, platform: platform })
         });
         const data = await res.json();
         if (data.checks_left !== undefined) {
           updateLimitBadge(data.checks_left);
         }
       } catch(e) {
-        document.getElementById('limitBadge').innerText = "📊 Осталось: 5 из 5";
+        document.getElementById('limitBadge').innerText = "📊 Лимит: 5 проверок в сутки";
       }
     }
 
@@ -348,7 +370,7 @@
     }
 
     function addNewMemberPrompt() {
-      const name = prompt("Введите имя (например: Муж, Сын, Мама):");
+      const name = prompt("Введите имя члена семьи (например: Муж, Дочь, Мама):");
       if (name && name.trim()) {
         const trimmed = name.trim();
         if (!familyMembers.includes(trimmed)) {
@@ -362,7 +384,7 @@
     function removeMember(name, event) {
       if (event) event.stopPropagation();
       if (name === "Я") { alert("Профиль «Я» удалить нельзя!"); return; }
-      if (confirm(`Вы уверены, что хотите удалить профиль «${name}»?`)) {
+      if (confirm(`Удалить профиль «${name}»?`)) {
         familyMembers = familyMembers.filter(m => m !== name);
         localStorage.removeItem(`profile_${userId}_${name}`);
         if (activeScannerTarget === name) activeScannerTarget = "Я";
@@ -373,7 +395,7 @@
         fetch(N8N_WEBHOOK_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: "save_profile", chat_id: userId, member_name: name, allergens: "", diseases: "" })
+          body: JSON.stringify({ action: "save_profile", chat_id: userId, member_name: name, allergens: "", diseases: "", platform: platform })
         }).catch(() => {});
       }
     }
@@ -462,7 +484,7 @@
 
     async function saveActiveMemberProfile() {
       const btn = document.getElementById('btnSaveProfile');
-      btn.innerText = "⏳ Сохраняю в Supabase..."; btn.disabled = true;
+      btn.innerText = "⏳ Сохранение..."; btn.disabled = true;
       const profileData = {
         age: document.getElementById('txt_age').value.trim(),
         diabetes: document.getElementById('chk_diabetes').checked,
@@ -482,10 +504,10 @@
         await fetch(N8N_WEBHOOK_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: "save_profile", chat_id: userId, member_name: currentEditingMember, allergens: profileData.allergens, diseases: JSON.stringify(profileData) })
+          body: JSON.stringify({ action: "save_profile", chat_id: userId, platform: platform, member_name: currentEditingMember, allergens: profileData.allergens, diseases: JSON.stringify(profileData) })
         });
         btn.innerText = "💾 Сохранить в базу"; btn.disabled = false;
-        alert(`✅ Профиль «${currentEditingMember}» сохранён!`);
+        alert(`✅ Профиль «${currentEditingMember}» успешно сохранён!`);
         closeEditMemberView();
       } catch(e) {
         btn.innerText = "💾 Сохранить в базу"; btn.disabled = false;
@@ -508,23 +530,18 @@
 
     function parseScannedCode(rawCode) {
       if (!rawCode) return "";
-      let code = rawCode.trim();
-      code = code.replace(/[\(\)]/g, '');
-
+      let code = rawCode.trim().replace(/[\(\)]/g, '');
       if (code.includes('01') && code.length >= 14) {
         let match = code.match(/01(\d{14})/);
         if (match && match[1]) {
           let gtin = match[1];
-          if (gtin.startsWith("0")) return gtin.substring(1);
-          return gtin;
+          return gtin.startsWith("0") ? gtin.substring(1) : gtin;
         }
       }
-
       let digitsMatch = code.match(/\d{13,14}/);
       if (digitsMatch) {
         let num = digitsMatch[0];
-        if (num.length === 14 && num.startsWith("0")) return num.substring(1);
-        return num;
+        return (num.length === 14 && num.startsWith("0")) ? num.substring(1) : num;
       }
       return code;
     }
@@ -540,14 +557,14 @@
         const res = await fetch(N8N_WEBHOOK_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ barcode: cleanBarcode, chat_id: userId, comment: buildHealthCommentForAI() })
+          body: JSON.stringify({ barcode: cleanBarcode, chat_id: userId, platform: platform, comment: buildHealthCommentForAI() })
         });
         handleServerResponse(await res.json());
       } catch(e) { showResult("⚠️ Ошибка сети", "Сбой подключения к серверу."); }
     }
 
     async function sendPhotoToN8n(base64Image) {
-      document.getElementById('loaderText').innerText = "ИИ читает состав с фото...";
+      document.getElementById('loaderText').innerText = "ИИ читает этикетку...";
       document.getElementById('loader').style.display = 'flex';
       document.getElementById('resultCard').style.display = 'none';
       try {
@@ -557,6 +574,7 @@
           body: JSON.stringify({ 
             image: base64Image, 
             chat_id: userId, 
+            platform: platform,
             comment: buildHealthCommentForAI(),
             barcode: lastScannedBarcode || null 
           })
@@ -581,7 +599,7 @@
       if (data.is_stale) {
         showResult(
           "🟡 ТРЕБУЕТ ОБНОВЛЕНИЯ",
-          `Товар «${data.product_name || "Продукт"}» проверялся более 30 дней назад.\n\n⚠️ Производители часто меняют рецептуру. Сфотографируйте состав прямо сейчас!`,
+          `Товар «${data.product_name || "Продукт"}» проверялся более 30 дней назад.\n\n⚠️ Производитель мог изменить состав. Сфотографируйте состав прямо сейчас!`,
           data.product_name,
           data.nova
         );
@@ -600,7 +618,7 @@
       if (data.not_found || !data.ok) {
         showResult(
           "📦 НОВЫЙ ТОВАР",
-          `Этого товара ещё нет в базе штрихкодов.\n\n💡 Нажмите кнопку ниже и сфотографируйте текст состава на упаковке — искусственный интеллект разберёт его и навсегда сохранит в базу!`,
+          `Этого товара ещё нет в базе.\n\n💡 Нажмите кнопку ниже и сфотографируйте текст состава — ИИ разберёт его и навсегда сохранит в базу!`,
           "Штрихкод: " + (lastScannedBarcode || "неизвестен")
         );
         if (staleBlock) staleBlock.style.display = 'block';
@@ -613,8 +631,6 @@
     function updateLimitBadge(left) {
       const badge = document.getElementById('limitBadge');
       if (!badge) return;
-      
-      // Только ВЫ (ID 5216250196) видите админскую плашку!
       if (userId == 5216250196) {
         badge.innerText = `👑 PRO-безлимит (Админ)`;
         badge.className = "inline-flex text-[11px] font-bold text-amber-600 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200";
@@ -659,12 +675,16 @@
       card.style.display = 'block';
     }
 
-    function buyProPlan(days) {
-      if (tg) { 
-        tg.openTelegramLink(`https://t.me/Food_Inspection_bot?start=pro_${days}`); 
-        tg.close(); 
-      } else { 
-        window.open(`https://max.ru/se14837453_bot?cmd=pro_${days}`, '_blank');
+    // 2. ИСПРАВЛЕННАЯ ОПЛАТА: ТЕЛЕГРАМ В ТЕЛЕГРАМЕ, МАКС В МАКСЕ (СТРОГО В РУБЛЯХ ЧЕРЕЗ PRODAMUS)
+    function buyProPlan(days, priceRub) {
+      if (isTelegramEnv && tg) {
+        tg.openTelegramLink(`https://t.me/Food_Inspection_bot?start=pro_${days}`);
+        tg.close();
+      } else {
+        // Для MAX и Web открываем официальную защищенную кассу Prodamus с привязкой ID
+        const customerExtra = `${userId}_${days}`;
+        const payUrl = `https://foodscanner.payform.ru?products[0][name]=PRO-подписка (${days} дней)&products[0][price]=${priceRub}&customer_extra=${encodeURIComponent(customerExtra)}`;
+        window.open(payUrl, '_blank');
       }
     }
 
