@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Food Scanner PRO</title>
   
-  <!-- ПОДКЛЮЧЕНИЕ SDK MAX С ЗАЩИТОЙ ОТ ПЕРЕЗАПИСИ ТЕЛЕГРАМОМ -->
   <script src="https://st.max.ru/js/max-web-app.js"></script>
   <script>
     if (window.WebApp) {
@@ -286,25 +285,14 @@
     const N8N_WEBHOOK_URL = "https://KakToTak.app.n8n.cloud/webhook/scan";
     const urlParams = new URLSearchParams(window.location.search);
 
-    // 1. ЧИСТОЕ РАЗДЕЛЕНИЕ: ИЗОЛИРУЕМ МАКС И ТЕЛЕГРАМ
+    // 1. ОПРЕДЕЛЕНИЕ СРЕДЫ
     const maxBridge = window.MAX_WebApp;
     const isTelegramEnv = !!(window.Telegram?.WebApp?.initData && window.Telegram.WebApp.initData.length > 0);
     const tg = isTelegramEnv ? window.Telegram.WebApp : null;
 
-    // 2. ПЕРЕХВАТ СИНЕЙ КНОПКИ МАКСА (БЕЗ КОНФЛИКТА С ТЕЛЕГРАМОМ)
     let maxUserId = urlParams.get('user_id') || urlParams.get('max_user_id') || null;
-    if (maxBridge && maxBridge.initDataUnsafe?.user?.id) {
+    if (!maxUserId && maxBridge && maxBridge.initDataUnsafe?.user?.id) {
       maxUserId = String(maxBridge.initDataUnsafe.user.id);
-      // Если открыто внутри шторки MAX — сразу перекидываем в браузер без зависаний
-      if (!urlParams.get('in_browser')) {
-        const targetUrl = `https://www.sostav-scan.ru/app.html?user_id=${maxUserId}&platform=max&in_browser=1`;
-        if (typeof maxBridge.openLink === 'function') {
-          maxBridge.openLink(targetUrl);
-          setTimeout(() => { try { maxBridge.close(); } catch(e){} }, 300);
-        } else {
-          window.location.href = targetUrl;
-        }
-      }
     }
 
     let tgUserId = tg?.initDataUnsafe?.user?.id ? String(tg.initDataUnsafe.user.id) : null;
@@ -693,23 +681,28 @@
       card.style.display = 'block';
     }
 
-    // 3. НАДЕЖНАЯ ОПЛАТА: БЕЗ БЛОКИРУЕМЫХ WINDOW.OPEN
+    // 3. УНИВЕРСАЛЬНАЯ ПРЯМАЯ ОПЛАТА: ТЕЛЕГРАМ, МАКС И БРАУЗЕР (БЕЗ РЕДИРЕКТОВ В БОТА)
     function buyProPlan(days, priceRub) {
-      if (isTelegramEnv && tg) {
-        tg.openTelegramLink(`https://t.me/Food_Inspection_bot?start=pro_${days}`);
-        tg.close();
-      } else {
-        const customerExtra = `${userId}_${days}`;
-        const prodName = encodeURIComponent(`PRO-подписка (${days} дней)`);
-        const payUrl = `https://foodscanner.payform.ru?do=pay&products[0][name]=${prodName}&products[0][price]=${priceRub}&products[0][quantity]=1&products[0][sum]=${priceRub}&customer_extra=${encodeURIComponent(customerExtra)}`;
-        
-        // Внутри MAX используем нативный openLink, иначе редирект в этой же вкладке
+      const customerExtra = `${userId}_${days}`;
+      const prodName = encodeURIComponent(`PRO-подписка (${days} дней)`);
+      const payUrl = `https://foodscanner.payform.ru?do=pay&products[0][name]=${prodName}&products[0][price]=${priceRub}&products[0][quantity]=1&customer_extra=${encodeURIComponent(customerExtra)}`;
+      
+      // Открываем кассу напрямую в Telegram, MAX или обычном браузере
+      try {
+        if (tg && typeof tg.openLink === 'function') {
+          tg.openLink(payUrl);
+          return;
+        }
+      } catch(e) {}
+
+      try {
         if (maxBridge && typeof maxBridge.openLink === 'function') {
           maxBridge.openLink(payUrl);
-        } else {
-          window.location.href = payUrl;
+          return;
         }
-      }
+      } catch(e) {}
+
+      window.location.href = payUrl;
     }
 
     async function startBarcodeScanner() {
