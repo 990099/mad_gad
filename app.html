@@ -681,27 +681,29 @@
       card.style.display = 'block';
     }
 
-    // 3. УНИВЕРСАЛЬНАЯ ПРЯМАЯ ОПЛАТА: ТЕЛЕГРАМ, МАКС И БРАУЗЕР (БЕЗ РЕДИРЕКТОВ В БОТА)
+    // 3. БЕЗОТКАЗНАЯ ОПЛАТА: РАБОТАЕТ В МИНИ-АППЕ, БРАУЗЕРЕ И ПО ССЫЛКЕ ИЗ ЧАТА
     function buyProPlan(days, priceRub) {
       const customerExtra = `${userId}_${days}`;
       const prodName = encodeURIComponent(`PRO-подписка (${days} дней)`);
       const payUrl = `https://foodscanner.payform.ru?do=pay&products[0][name]=${prodName}&products[0][price]=${priceRub}&products[0][quantity]=1&customer_extra=${encodeURIComponent(customerExtra)}`;
       
-      // Открываем кассу напрямую в Telegram, MAX или обычном браузере
+      // 1. Для Telegram WebApp
       try {
-        if (tg && typeof tg.openLink === 'function') {
+        if (isTelegramEnv && tg && typeof tg.openLink === 'function') {
           tg.openLink(payUrl);
           return;
         }
       } catch(e) {}
 
+      // 2. Для реального Mini App внутри MAX (синяя кнопка с активным initData)
       try {
-        if (maxBridge && typeof maxBridge.openLink === 'function') {
+        if (maxBridge && maxBridge.initData && typeof maxBridge.openLink === 'function') {
           maxBridge.openLink(payUrl);
           return;
         }
       } catch(e) {}
 
+      // 3. Для Safari, Chrome или перехода по ссылке из чата — прямой надежный переход
       window.location.href = payUrl;
     }
 
