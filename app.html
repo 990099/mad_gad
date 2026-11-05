@@ -247,7 +247,7 @@
     </div>
   </div>
 
-  <!-- ВКЛАДКА 4: PRO (ФИКСИРОВАННЫЕ ЦЕНЫ PRODAMUS) -->
+  <!-- ВКЛАДКА 4: PRO -->
   <div id="tab-pro" style="display: none;" class="p-4 max-w-md mx-auto w-full space-y-4">
     <div class="bg-gradient-to-br from-amber-500 to-orange-600 rounded-3xl p-6 text-white text-center shadow-lg space-y-4">
       <div class="text-4xl">👑</div>
@@ -285,7 +285,6 @@
     const N8N_WEBHOOK_URL = "https://KakToTak.app.n8n.cloud/webhook/scan";
     const urlParams = new URLSearchParams(window.location.search);
 
-    // 1. ОПРЕДЕЛЕНИЕ СРЕДЫ
     const maxBridge = window.MAX_WebApp;
     const isTelegramEnv = !!(window.Telegram?.WebApp?.initData && window.Telegram.WebApp.initData.length > 0);
     const tg = isTelegramEnv ? window.Telegram.WebApp : null;
@@ -317,6 +316,17 @@
       if (tg) { tg.expand(); tg.ready(); }
       if (maxBridge?.ready) { maxBridge.ready(); }
     } catch(e) {}
+
+    // ЗАПРОС ПРАВ КАМЕРЫ ДЛЯ МАКСА
+    async function ensureCameraPermission() {
+      const pm = maxBridge?.PermissionsManager || window.WebApp?.PermissionsManager;
+      if (pm && typeof pm.requestAccess === 'function') {
+        try {
+          if (typeof pm.init === 'function') await pm.init();
+          await pm.requestAccess(['camera'], 'Для сканирования штрихкода и этикетки');
+        } catch(e) {}
+      }
+    }
 
     let currentStream = null;
     let html5QrScanner = null;
@@ -681,13 +691,11 @@
       card.style.display = 'block';
     }
 
-    // 3. БЕЗОТКАЗНАЯ ОПЛАТА: РАБОТАЕТ В МИНИ-АППЕ, БРАУЗЕРЕ И ПО ССЫЛКЕ ИЗ ЧАТА
     function buyProPlan(days, priceRub) {
       const customerExtra = `${userId}_${days}`;
       const prodName = encodeURIComponent(`PRO-подписка (${days} дней)`);
       const payUrl = `https://foodscanner.payform.ru?do=pay&products[0][name]=${prodName}&products[0][price]=${priceRub}&products[0][quantity]=1&customer_extra=${encodeURIComponent(customerExtra)}`;
       
-      // 1. Для Telegram WebApp
       try {
         if (isTelegramEnv && tg && typeof tg.openLink === 'function') {
           tg.openLink(payUrl);
@@ -695,19 +703,19 @@
         }
       } catch(e) {}
 
-      // 2. Для реального Mini App внутри MAX (синяя кнопка с активным initData)
       try {
-        if (maxBridge && maxBridge.initData && typeof maxBridge.openLink === 'function') {
+        if (maxBridge && typeof maxBridge.openLink === 'function') {
           maxBridge.openLink(payUrl);
           return;
         }
       } catch(e) {}
 
-      // 3. Для Safari, Chrome или перехода по ссылке из чата — прямой надежный переход
       window.location.href = payUrl;
     }
 
+    // ИСПРАВЛЕНИЕ ЗАПУСКА СКАНЕРА С ЗАПРОСОМ ПРАВ КАМЕРЫ В MAX
     async function startBarcodeScanner() {
+      await ensureCameraPermission();
       document.getElementById('barcodeModal').style.display = 'flex';
       try {
         if (!html5QrScanner) {
@@ -743,6 +751,7 @@
     }
 
     async function startLiveCamera() {
+      await ensureCameraPermission();
       const m = document.getElementById('cameraModal'), v = document.getElementById('cameraStream');
       m.style.display = 'flex';
       try {
