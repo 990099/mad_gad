@@ -53,39 +53,7 @@
     </div>
   </div>
 
-  <!-- КРАСИВОЕ МОДАЛЬНОЕ ОКНО РУЧНОГО И ФОТО-ВВОДА ШТРИХКОДА (ВМЕСТО PROMPT) -->
-  <div id="manualInputModal" style="display: none;" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
-      <div class="flex justify-between items-center">
-        <h3 class="text-sm font-black text-slate-900 dark:text-white">⚡️ Сканирование штрихкода</h3>
-        <button type="button" onclick="closeManualInputModal()" class="text-slate-400 hover:text-white font-bold text-base">✕</button>
-      </div>
-      <p class="text-xs text-slate-500 dark:text-slate-400">Сделайте фото штрихкода на упаковке или введите цифры вручную:</p>
-      
-      <!-- Скрытый инпут для фото штрихкода в MAX -->
-      <input type="file" id="barcodePhotoInput" accept="image/*" capture="environment" style="display: none;" onchange="processBarcodePhoto(event)">
-      
-      <button type="button" onclick="document.getElementById('barcodePhotoInput').click()" class="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold text-xs rounded-xl shadow transition flex items-center justify-center gap-2">
-        <span>📸</span>
-        <span>Сфотографировать штрихкод</span>
-      </button>
-
-      <div class="relative flex py-1 items-center">
-        <div class="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
-        <span class="flex-shrink mx-4 text-[10px] text-slate-400 uppercase font-bold">или цифрами</span>
-        <div class="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
-      </div>
-
-      <input type="text" id="manualBarcodeInput" placeholder="Например: 4607001230012" class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-mono font-bold text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500">
-      
-      <div class="space-y-2 pt-1">
-        <button type="button" onclick="submitManualBarcode()" class="w-full py-3 bg-slate-900 dark:bg-slate-700 hover:opacity-90 text-white font-bold text-xs rounded-xl shadow transition">🔍 Проверить по цифрам</button>
-        <button type="button" onclick="closeManualInputModal()" class="w-full py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold text-xs rounded-xl transition">Отмена</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ОКНО ЖИВОГО СКАНЕРА ШТРИХКОДОВ -->
+  <!-- ОКНО СКАНЕРА ШТРИХКОДОВ И ЧЕСТНОГО ЗНАКА -->
   <div id="barcodeModal" style="display: none;" class="fixed inset-0 z-50 bg-black flex flex-col justify-between p-4">
     <div class="w-full flex justify-between items-center text-white pt-2 px-2 z-20">
       <span class="text-xs font-bold tracking-wider bg-black/60 px-3 py-1.5 rounded-full backdrop-blur-md">⚡️ Штрихкод или Честный ЗНАК</span>
@@ -95,7 +63,7 @@
       <div id="barcodeReader" class="w-full h-full"></div>
     </div>
     <div class="w-full pb-4 flex justify-center z-20">
-      <button type="button" onclick="openManualInput()" class="px-5 py-2.5 bg-white/20 text-white font-bold text-xs rounded-full backdrop-blur-md active:scale-95 transition">⌨️ Сфотографировать / Ввести</button>
+      <button type="button" onclick="openManualInput()" class="px-5 py-2.5 bg-white/20 text-white font-bold text-xs rounded-full backdrop-blur-md active:scale-95 transition">⌨️ Ввести цифры вручную</button>
     </div>
   </div>
 
@@ -279,7 +247,7 @@
     </div>
   </div>
 
-  <!-- ВКЛАДКА 4: PRO -->
+  <!-- ВКЛАДКА 4: PRO (ФИКСИРОВАННЫЕ ЦЕНЫ PRODAMUS) -->
   <div id="tab-pro" style="display: none;" class="p-4 max-w-md mx-auto w-full space-y-4">
     <div class="bg-gradient-to-br from-amber-500 to-orange-600 rounded-3xl p-6 text-white text-center shadow-lg space-y-4">
       <div class="text-4xl">👑</div>
@@ -317,6 +285,7 @@
     const N8N_WEBHOOK_URL = "https://KakToTak.app.n8n.cloud/webhook/scan";
     const urlParams = new URLSearchParams(window.location.search);
 
+    // 1. ОПРЕДЕЛЕНИЕ СРЕДЫ
     const maxBridge = window.MAX_WebApp;
     const isTelegramEnv = !!(window.Telegram?.WebApp?.initData && window.Telegram.WebApp.initData.length > 0);
     const tg = isTelegramEnv ? window.Telegram.WebApp : null;
@@ -348,16 +317,6 @@
       if (tg) { tg.expand(); tg.ready(); }
       if (maxBridge?.ready) { maxBridge.ready(); }
     } catch(e) {}
-
-    async function ensureCameraPermission() {
-      const pm = maxBridge?.PermissionsManager || window.WebApp?.PermissionsManager;
-      if (pm && typeof pm.requestAccess === 'function') {
-        try {
-          if (typeof pm.init === 'function') await pm.init();
-          await pm.requestAccess(['camera'], 'Для сканирования штрихкода');
-        } catch(e) {}
-      }
-    }
 
     let currentStream = null;
     let html5QrScanner = null;
@@ -722,11 +681,13 @@
       card.style.display = 'block';
     }
 
+    // 3. БЕЗОТКАЗНАЯ ОПЛАТА: РАБОТАЕТ В МИНИ-АППЕ, БРАУЗЕРЕ И ПО ССЫЛКЕ ИЗ ЧАТА
     function buyProPlan(days, priceRub) {
       const customerExtra = `${userId}_${days}`;
       const prodName = encodeURIComponent(`PRO-подписка (${days} дней)`);
       const payUrl = `https://foodscanner.payform.ru?do=pay&products[0][name]=${prodName}&products[0][price]=${priceRub}&products[0][quantity]=1&customer_extra=${encodeURIComponent(customerExtra)}`;
       
+      // 1. Для Telegram WebApp
       try {
         if (isTelegramEnv && tg && typeof tg.openLink === 'function') {
           tg.openLink(payUrl);
@@ -734,19 +695,19 @@
         }
       } catch(e) {}
 
+      // 2. Для реального Mini App внутри MAX (синяя кнопка с активным initData)
       try {
-        if (maxBridge && typeof maxBridge.openLink === 'function') {
+        if (maxBridge && maxBridge.initData && typeof maxBridge.openLink === 'function') {
           maxBridge.openLink(payUrl);
           return;
         }
       } catch(e) {}
 
+      // 3. Для Safari, Chrome или перехода по ссылке из чата — прямой надежный переход
       window.location.href = payUrl;
     }
 
-    // ИСПРАВЛЕННЫЙ СТАРТ СКАНЕРА: ЕСЛИ ЖИВАЯ КАМЕРА В МАКСЕ ПАДАЕТ, СРАЗУ ОТКРЫВАЕМ НАШЕ МОДАЛЬНОЕ ОКНО ФОТО/ВВОДА
     async function startBarcodeScanner() {
-      await ensureCameraPermission();
       document.getElementById('barcodeModal').style.display = 'flex';
       try {
         if (!html5QrScanner) {
@@ -767,24 +728,7 @@
           },
           () => {}
         );
-      } catch(e1) {
-        // Пробуем дефолтную камеру
-        try {
-          await html5QrScanner.start(
-            {},
-            { fps: 15, qrbox: { width: 280, height: 180 } },
-            (code) => {
-              stopBarcodeScanner();
-              sendBarcodeToN8n(code);
-            },
-            () => {}
-          );
-        } catch(e2) {
-          // Если живой поток заблокирован в песочнице MAX — закрываем пустой экран и сразу открываем наше окно фото-скана
-          stopBarcodeScanner();
-          document.getElementById('manualInputModal').style.display = 'flex';
-        }
-      }
+      } catch(e) { stopBarcodeScanner(); openManualInput(); }
     }
 
     async function stopBarcodeScanner() {
@@ -794,58 +738,11 @@
 
     function openManualInput() {
       stopBarcodeScanner();
-      document.getElementById('manualInputModal').style.display = 'flex';
-    }
-
-    function closeManualInputModal() {
-      document.getElementById('manualInputModal').style.display = 'none';
-    }
-
-    // РАСПОЗНАВАНИЕ ШТРИХКОДА С ФОТОГРАФИИ ЧЕРЕЗ HTML5-QRCODE (РАБОТАЕТ В 100% СЕРЕДИНЕ ВЕБВЬЮ)
-    async function processBarcodePhoto(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      closeManualInputModal();
-      
-      document.getElementById('loaderText').innerText = "Распознаю штрихкод с фото...";
-      document.getElementById('loader').style.display = 'flex';
-      
-      try {
-        if (!html5QrScanner) {
-          html5QrScanner = new Html5Qrcode("barcodeReaderForFile", {
-            formatsToSupport: [
-              Html5QrcodeSupportedFormats.EAN_13,
-              Html5QrcodeSupportedFormats.DATA_MATRIX,
-              Html5QrcodeSupportedFormats.UPC_A
-            ]
-          });
-        }
-        const decodedText = await html5QrScanner.scanFile(file, true);
-        document.getElementById('loader').style.display = 'none';
-        if (decodedText) {
-          sendBarcodeToN8n(decodedText);
-        } else {
-          alert("Не удалось обнаружить штрихкод на фото. Попробуйте ещё раз или введите цифры вручную.");
-        }
-      } catch(err) {
-        document.getElementById('loader').style.display = 'none';
-        // Если авто-распознавание по файлу не нашло код, просим ввести цифры вручную в наш инпут
-        document.getElementById('manualInputModal').style.display = 'flex';
-        alert("Штрихкод не распознан. Пожалуйста, введите цифры вручную ниже.");
-      }
-    }
-
-    function submitManualBarcode() {
-      const val = document.getElementById('manualBarcodeInput').value.trim();
-      closeManualInputModal();
-      if (val) {
-        sendBarcodeToN8n(val);
-        document.getElementById('manualBarcodeInput').value = '';
-      }
+      const c = prompt("Введите штрихкод или цифры маркировки:");
+      if (c) sendBarcodeToN8n(c.trim());
     }
 
     async function startLiveCamera() {
-      await ensureCameraPermission();
       const m = document.getElementById('cameraModal'), v = document.getElementById('cameraStream');
       m.style.display = 'flex';
       try {
@@ -857,7 +754,7 @@
 
     function stopLiveCamera() {
       if (currentStream) { currentStream.getTracks().forEach(t => t.stop()); currentStream = null; }
-      document.getElementById('cameraStream'].srcObject = null;
+      document.getElementById('cameraStream').srcObject = null;
       document.getElementById('cameraModal').style.display = 'none';
     }
 
