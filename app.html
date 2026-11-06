@@ -53,7 +53,21 @@
     </div>
   </div>
 
-  <!-- КРАСИВОЕ ОКНО РУЧНОГО ВВОДА ШТРИХКОДА (ВМЕСТО УРОДЛИВОГО PROMPT) -->
+  <!-- ОКНО ЖИВОГО ПОТОКОВОГО СКАНЕРА ШТРИХКОДОВ -->
+  <div id="barcodeModal" style="display: none;" class="fixed inset-0 z-50 bg-black flex flex-col justify-between p-4">
+    <div class="w-full flex justify-between items-center text-white pt-2 px-2 z-20">
+      <span class="text-xs font-bold tracking-wider bg-black/60 px-3 py-1.5 rounded-full backdrop-blur-md">⚡️ Наведите камеру на штрихкод</span>
+      <button type="button" onclick="stopBarcodeScanner()" class="w-10 h-10 bg-white/20 active:bg-white/40 rounded-full flex items-center justify-center text-white font-bold text-lg backdrop-blur-md">✕</button>
+    </div>
+    <div class="relative w-full flex-1 flex items-center justify-center my-2 bg-neutral-900 rounded-3xl overflow-hidden">
+      <div id="barcodeReader" class="w-full h-full"></div>
+    </div>
+    <div class="w-full pb-4 flex justify-center z-20">
+      <button type="button" onclick="openManualInput()" class="px-5 py-2.5 bg-white/20 text-white font-bold text-xs rounded-full backdrop-blur-md active:scale-95 transition">⌨️ Ввести цифры вручную</button>
+    </div>
+  </div>
+
+  <!-- КРАСИВОЕ МОДАЛЬНОЕ ОКНО РУЧНОГО ВВОДА (БЕЗ WINDOW.PROMPT) -->
   <div id="manualInputModal" style="display: none;" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
       <div class="flex justify-between items-center">
@@ -64,26 +78,8 @@
       <input type="text" id="manualBarcodeInput" placeholder="Например: 4607001230012" class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-mono font-bold text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500">
       <div class="space-y-2 pt-1">
         <button type="button" onclick="submitManualBarcode()" class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl shadow transition">🔍 Найти товар</button>
-        <button type="button" onclick="fallbackToBarcodeCamera()" class="w-full py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5">
-          <span>📸</span>
-          <span>Сфотографировать штрихкод</span>
-        </button>
+        <button type="button" onclick="closeManualInputModal()" class="w-full py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold text-xs rounded-xl transition">Отмена</button>
       </div>
-    </div>
-  </div>
-
-  <!-- ОКНО ЖИВОГО СКАНЕРА ШТРИХКОДОВ -->
-  <div id="barcodeModal" style="display: none;" class="fixed inset-0 z-50 bg-black flex flex-col justify-between p-4">
-    <div class="w-full flex justify-between items-center text-white pt-2 px-2 z-20">
-      <span class="text-xs font-bold tracking-wider bg-black/60 px-3 py-1.5 rounded-full backdrop-blur-md">⚡️ Штрихкод или Честный ЗНАК</span>
-      <button type="button" onclick="stopBarcodeScanner()" class="w-10 h-10 bg-white/20 active:bg-white/40 rounded-full flex items-center justify-center text-white font-bold text-lg backdrop-blur-md">✕</button>
-    </div>
-    <div class="relative w-full flex-1 flex items-center justify-center my-2 bg-neutral-900 rounded-3xl overflow-hidden">
-      <div id="barcodeReader" class="w-full h-full"></div>
-    </div>
-    <div class="w-full pb-4 flex justify-center gap-2 z-20">
-      <button type="button" onclick="fallbackToBarcodeCamera()" class="px-4 py-2.5 bg-white/20 text-white font-bold text-xs rounded-full backdrop-blur-md active:scale-95 transition">📸 Фото штрихкода</button>
-      <button type="button" onclick="openManualInput()" class="px-4 py-2.5 bg-white/20 text-white font-bold text-xs rounded-full backdrop-blur-md active:scale-95 transition">⌨️ Ввести цифры</button>
     </div>
   </div>
 
@@ -140,8 +136,6 @@
         <p id="loaderText" class="text-xs font-bold text-emerald-600 dark:text-emerald-400 animate-pulse">Ищу товар в базе...</p>
       </div>
 
-      <!-- СКРЫТЫЕ ИНПУТЫ ДЛЯ СИСТЕМНОЙ КАМЕРЫ ТЕЛЕФОНА (РАБОТАЮТ В 100% СЛУЧАЕВ) -->
-      <input type="file" id="barcodeCameraInput" accept="image/*" capture="camera" style="display: none;" onchange="processBarcodeFile(event)">
       <input type="file" id="nativeCameraInput" accept="image/*" capture="camera" style="display: none;" onchange="processFilePhoto(event)">
       <input type="file" id="galleryInput" accept="image/*" style="display: none;" onchange="processFilePhoto(event)">
 
@@ -338,17 +332,6 @@
       if (tg) { tg.expand(); tg.ready(); }
       if (maxBridge?.ready) { maxBridge.ready(); }
     } catch(e) {}
-
-    // ЗАПРОС ПРАВ КАМЕРЫ ДЛЯ МАКСА ПО ОФИЦИАЛЬНОМУ ГАЙДУ
-    async function ensureCameraPermission() {
-      const pm = maxBridge?.PermissionsManager || window.WebApp?.PermissionsManager;
-      if (pm && typeof pm.requestAccess === 'function') {
-        try {
-          if (!pm.isInited && typeof pm.init === 'function') await pm.init();
-          await pm.requestAccess(['camera']);
-        } catch(e) {}
-      }
-    }
 
     let currentStream = null;
     let html5QrScanner = null;
@@ -566,21 +549,31 @@
       return `Проверяем для: ${activeScannerTarget}. Возраст: ${p.age || 'не указан'}. Диабет:${p.diabetes}, Давление:${p.pressure}, Гастрит:${p.gastritis}, Детское:${p.kids}, Аллергены:${p.allergens || 'нет'}. Вердикт строго: 🟢 ПРИГОДНО, 🟡 НЕЙТРАЛЬНО, 🔴 ОПАСНО.`;
     }
 
+    // ТОЧНАЯ ОЧИСТКА ШТРИХКОДОВ (EAN-13 И ЧЕСТНЫЙ ЗНАК DATAMATRIX)
     function parseScannedCode(rawCode) {
       if (!rawCode) return "";
-      let code = rawCode.trim().replace(/[\(\)]/g, '');
-      if (code.includes('01') && code.length >= 14) {
-        let match = code.match(/01(\d{14})/);
-        if (match && match[1]) {
-          let gtin = match[1];
-          return gtin.startsWith("0") ? gtin.substring(1) : gtin;
-        }
+      let code = String(rawCode).trim().replace(/[\(\)]/g, '');
+      
+      // Честный ЗНАК: идентификатор применения 01 + 14 цифр GTIN
+      let gtinMatch = code.match(/01(\d{14})/);
+      if (gtinMatch && gtinMatch[1]) {
+        let gtin = gtinMatch[1];
+        return gtin.startsWith("0") ? gtin.substring(1) : gtin;
       }
+      
+      // Поиск 13 или 14 цифр подряд
       let digitsMatch = code.match(/\d{13,14}/);
       if (digitsMatch) {
         let num = digitsMatch[0];
-        return (num.length === 14 && num.startsWith("0")) ? num.substring(1) : num;
+        if (num.length === 14 && num.startsWith("0")) return num.substring(1);
+        return num;
       }
+
+      // Чистые 13 цифр стандартного EAN-13
+      let cleanDigits = code.replace(/\D/g, '');
+      if (cleanDigits.length === 13) return cleanDigits;
+      if (cleanDigits.length === 14 && cleanDigits.startsWith("0")) return cleanDigits.substring(1);
+      
       return code;
     }
 
@@ -713,6 +706,7 @@
       card.style.display = 'block';
     }
 
+    // ФИКСИРОВАННАЯ ОПЛАТА PRODAMUS
     function buyProPlan(days, priceRub) {
       const customerExtra = `${userId}_${days}`;
       const prodName = encodeURIComponent(`PRO-подписка (${days} дней)`);
@@ -726,7 +720,7 @@
       } catch(e) {}
 
       try {
-        if (maxBridge && typeof maxBridge.openLink === 'function') {
+        if (maxBridge && maxBridge.initData && typeof maxBridge.openLink === 'function') {
           maxBridge.openLink(payUrl);
           return;
         }
@@ -735,45 +729,66 @@
       window.location.href = payUrl;
     }
 
-    // ИСПРАВЛЕННЫЙ ЗАПУСК СКАНЕРА ШТРИХКОДОВ: БЕЗ WINDOW.PROMPT И С ФОЛЛБЭКОМ НА КАМЕРУ
+    // ЖИВОЙ ПОТОКОВЫЙ СКАНЕР: ЗАПУСК ПО АППАРАТНОМУ ID ЗАДНЕЙ КАМЕРЫ БЕЗ СБОЕВ В MAX
     async function startBarcodeScanner() {
-      await ensureCameraPermission();
-      document.getElementById('barcodeModal').style.display = 'flex';
-      try {
-        if (!html5QrScanner) {
-          html5QrScanner = new Html5Qrcode("barcodeReader", {
-            formatsToSupport: [
-              Html5QrcodeSupportedFormats.EAN_13,
-              Html5QrcodeSupportedFormats.DATA_MATRIX,
-              Html5QrcodeSupportedFormats.UPC_A
-            ]
-          });
-        }
-        await html5QrScanner.start(
-          { facingMode: "environment" },
-          { fps: 15, qrbox: { width: 280, height: 180 } },
-          (code) => {
+      const modal = document.getElementById('barcodeModal');
+      modal.style.display = 'flex';
+
+      // 100 мс задержки для гарантии отрисовки контейнера в DOM
+      setTimeout(async () => {
+        try {
+          if (!html5QrScanner) {
+            html5QrScanner = new Html5Qrcode("barcodeReader", {
+              formatsToSupport: [
+                Html5QrcodeSupportedFormats.EAN_13,
+                Html5QrcodeSupportedFormats.DATA_MATRIX,
+                Html5QrcodeSupportedFormats.UPC_A,
+                Html5QrcodeSupportedFormats.EAN_8,
+                Html5QrcodeSupportedFormats.CODE_128
+              ],
+              verbose: false
+            });
+          }
+
+          // Функция мгновенного автозахвата при наведении
+          const onScanSuccess = (code) => {
             stopBarcodeScanner();
             sendBarcodeToN8n(code);
-          },
-          () => {}
-        );
-      } catch(e1) {
-        try {
-          await html5QrScanner.start(
-            {},
-            { fps: 15, qrbox: { width: 280, height: 180 } },
-            (code) => {
-              stopBarcodeScanner();
-              sendBarcodeToN8n(code);
-            },
-            () => {}
-          );
-        } catch(e2) {
-          // Если потоковое видео заблокировано в MAX: сразу открываем нативную камеру телефона!
-          fallbackToBarcodeCamera();
+          };
+
+          const config = {
+            fps: 20,
+            qrbox: { width: 280, height: 180 },
+            aspectRatio: 1.0
+          };
+
+          // Опрашиваем физические камеры устройства для обхода сбоев WebView
+          let backCameraId = null;
+          try {
+            const cameras = await Html5Qrcode.getCameras();
+            if (cameras && cameras.length > 0) {
+              const backCam = cameras.find(c => {
+                const l = (c.label || '').toLowerCase();
+                return l.includes('back') || l.includes('rear') || l.includes('environment') || l.includes('0');
+              });
+              backCameraId = backCam ? backCam.id : cameras[cameras.length - 1].id;
+            }
+          } catch(errCam) {}
+
+          if (backCameraId) {
+            await html5QrScanner.start(backCameraId, config, onScanSuccess, () => {});
+          } else {
+            try {
+              await html5QrScanner.start({ facingMode: "environment" }, config, onScanSuccess, () => {});
+            } catch(eEnv) {
+              await html5QrScanner.start({}, config, onScanSuccess, () => {});
+            }
+          }
+        } catch(e) {
+          stopBarcodeScanner();
+          openManualInput();
         }
-      }
+      }, 100);
     }
 
     async function stopBarcodeScanner() {
@@ -783,46 +798,13 @@
       document.getElementById('barcodeModal').style.display = 'none';
     }
 
-    // ВЫЗОВ СИСТЕМНОЙ КАМЕРЫ ДЛЯ ШТРИХКОДА (РАБОТАЕТ ВСЕГДА В MAX)
-    function fallbackToBarcodeCamera() {
-      stopBarcodeScanner();
-      document.getElementById('barcodeCameraInput').click();
-    }
-
-    // РАСПОЗНАВАНИЕ ШТРИХКОДА СО СНЯТОЙ ФОТОГРАФИИ
-    async function processBarcodeFile(e) {
-      const f = e.target.files[0];
-      if (!f) return;
-      document.getElementById('loaderText').innerText = "Читаю штрихкод с фото...";
-      document.getElementById('loader').style.display = 'flex';
-      document.getElementById('resultCard').style.display = 'none';
-
-      try {
-        if (!html5QrScanner) {
-          html5QrScanner = new Html5Qrcode("barcodeReader", {
-            formatsToSupport: [
-              Html5QrcodeSupportedFormats.EAN_13,
-              Html5QrcodeSupportedFormats.DATA_MATRIX,
-              Html5QrcodeSupportedFormats.UPC_A
-            ]
-          });
-        }
-        const decoded = await html5QrScanner.scanFile(f, false);
-        if (decoded) {
-          sendBarcodeToN8n(decoded);
-          return;
-        }
-      } catch(err) {
-        // Если библиотека не справилась, отправляем фото состава на ИИ в n8n
-        const r = new FileReader();
-        r.onload = (ev) => sendPhotoToN8n(ev.target.result);
-        r.readAsDataURL(f);
-      }
-    }
-
     function openManualInput() {
       stopBarcodeScanner();
       document.getElementById('manualInputModal').style.display = 'flex';
+      setTimeout(() => {
+        const inp = document.getElementById('manualBarcodeInput');
+        if (inp) inp.focus();
+      }, 100);
     }
 
     function closeManualInputModal() {
@@ -839,7 +821,6 @@
     }
 
     async function startLiveCamera() {
-      await ensureCameraPermission();
       const m = document.getElementById('cameraModal'), v = document.getElementById('cameraStream');
       m.style.display = 'flex';
       try {
