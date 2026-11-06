@@ -7,37 +7,21 @@
   
   <script src="https://st.max.ru/js/max-web-app.js"></script>
   <script>
-    if (window.WebApp) {
-      window.MAX_WebApp = window.WebApp;
-    }
+    if (window.WebApp) { window.MAX_WebApp = window.WebApp; }
   </script>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <style>
-    body {
-      background-color: var(--tg-theme-bg-color, #f8fafc);
-      color: var(--tg-theme-text-color, #0f172a);
-      -webkit-tap-highlight-color: transparent;
-    }
-    #barcodeReader {
-      width: 100% !important;
-      height: 100% !important;
-      position: relative;
-    }
-    #barcodeReader video {
-      width: 100% !important;
-      height: 100% !important;
-      object-fit: cover !important;
-      border-radius: 1.5rem !important;
-    }
-    #barcodeReader__scan_region {
-      width: 100% !important;
-      height: 100% !important;
-    }
+    body { background-color: var(--tg-theme-bg-color, #f8fafc); color: var(--tg-theme-text-color, #0f172a); -webkit-tap-highlight-color: transparent; }
+    #barcodeReader { width: 100% !important; height: 100% !important; position: relative; }
+    #barcodeReader video { width: 100% !important; height: 100% !important; object-fit: cover !important; border-radius: 1.5rem !important; }
+    #barcodeReader__scan_region { width: 100% !important; height: 100% !important; }
     .hide-scrollbar::-webkit-scrollbar { display: none; }
     .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    /* Стили для красивого отображения ИИ-разметки */
+    #resultText b { color: var(--tg-theme-text-color, #0f172a); font-weight: 800; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col font-sans pb-24">
@@ -47,44 +31,32 @@
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 text-center max-w-sm w-full space-y-4 shadow-2xl">
       <span class="text-4xl block">🛡️</span>
       <h3 class="text-base font-black text-slate-900 dark:text-white">Откройте через мессенджер</h3>
-      <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-        Для сохранения лимитов и профиля здоровья запустите сканер через Telegram или MAX:
-      </p>
+      <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Для сохранения лимитов и профиля здоровья запустите сканер через Telegram или MAX:</p>
       <div class="space-y-2 pt-2">
-        <a href="https://t.me/Food_Inspection_bot" class="w-full py-3 bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition">
-          <span>✈️ Открыть в Telegram</span>
-        </a>
-        <a href="https://max.ru/se14837453_bot" class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition">
-          <span>💬 Открыть в MAX</span>
-        </a>
-        <button type="button" onclick="document.getElementById('webWarningModal').style.display='none'" class="text-[11px] text-slate-400 underline pt-1 block mx-auto">
-          Продолжить как гость
-        </button>
+        <a href="https://t.me/Food_Inspection_bot" class="w-full py-3 bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition"><span>✈️ Открыть в Telegram</span></a>
+        <a href="https://max.ru/se14837453_bot" class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition"><span>💬 Открыть в MAX</span></a>
+        <button type="button" onclick="document.getElementById('webWarningModal').style.display='none'" class="text-[11px] text-slate-400 underline pt-1 block mx-auto">Продолжить как гость</button>
       </div>
     </div>
   </div>
 
-  <!-- ОКНО СКАНЕРА ШТРИХКОДОВ -->
-  <div id="barcodeModal" style="display: none;" class="fixed inset-0 z-50 bg-black flex flex-col justify-between p-4">
-    <div class="w-full flex justify-between items-center text-white pt-2 px-2 z-20">
-      <span class="text-xs font-bold tracking-wider bg-black/60 px-3 py-1.5 rounded-full backdrop-blur-md">⚡️ Наведите камеру на штрихкод</span>
-      <button type="button" onclick="stopBarcodeScanner()" class="w-10 h-10 bg-white/20 active:bg-white/40 rounded-full flex items-center justify-center text-white font-bold text-lg backdrop-blur-md">✕</button>
-    </div>
-    <div class="relative w-full flex-1 flex items-center justify-center my-2 bg-neutral-900 rounded-3xl overflow-hidden">
-      <div id="barcodeReader"></div>
-    </div>
-    <div class="w-full pb-4 flex justify-center z-20">
-      <button type="button" onclick="openManualInput()" class="px-5 py-2.5 bg-white/20 text-white font-bold text-xs rounded-full backdrop-blur-md active:scale-95 transition">⌨️ Ввести цифры вручную</button>
+  <!-- МОДАЛЬНОЕ ОКНО ПОДСКАЗКИ СТРОГО ДЛЯ МАКСА -->
+  <div id="maxBarcodeNoticeModal" style="display: none;" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center"><span class="text-2xl">📸</span><button type="button" onclick="closeMaxBarcodeModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 font-bold">✕</button></div>
+      <div><h3 class="text-sm font-black text-slate-900 dark:text-white">Сканирование в MAX</h3><p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">По техническим ограничениям платформы MAX живое видеосканирование полосок временно недоступно.</p></div>
+      <div class="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/40"><p class="text-xs font-bold text-emerald-700 dark:text-emerald-300">💡 Сфотографируйте состав упаковки — наш ИИ разберёт его за 2 секунды прямо с этикетки!</p></div>
+      <div class="space-y-2 pt-1">
+        <button type="button" onclick="launchPhotoFromMaxModal()" class="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-600 active:scale-95 text-white font-extrabold text-xs rounded-xl shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2 transition"><span>📸</span><span>Сфотографировать состав</span></button>
+        <button type="button" onclick="switchToManualInputFromMax()" class="w-full py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold text-xs rounded-xl transition">⌨️ Ввести цифры штрихкода вручную</button>
+      </div>
     </div>
   </div>
 
-  <!-- КРАСИВОЕ МОДАЛЬНОЕ ОКНО РУЧНОГО ВВОДА ШТРИХКОДА (БЕЗ WINDOW.PROMPT) -->
+  <!-- ОКНО РУЧНОГО ВВОДА ШТРИХКОДА -->
   <div id="manualInputModal" style="display: none;" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
-      <div class="flex justify-between items-center">
-        <h3 class="text-sm font-black text-slate-900 dark:text-white">⌨️ Ввод штрихкода</h3>
-        <button type="button" onclick="closeManualInputModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 font-bold">✕</button>
-      </div>
+      <div class="flex justify-between items-center"><h3 class="text-sm font-black text-slate-900 dark:text-white">⌨️ Ввод штрихкода</h3><button type="button" onclick="closeManualInputModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 font-bold">✕</button></div>
       <p class="text-xs text-slate-500 dark:text-slate-400">Введите цифры штрихкода (EAN-13) или маркировки Честный ЗНАК:</p>
       <input type="text" id="manualBarcodeInput" placeholder="Например: 4607001230012" class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-mono font-bold text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500">
       <div class="space-y-2 pt-1">
@@ -94,65 +66,49 @@
     </div>
   </div>
 
+  <!-- ОКНО ЖИВОГО СКАНЕРА ШТРИХКОДОВ (ДЛЯ ТЕЛЕГРАМА И ВЕБА) -->
+  <div id="barcodeModal" style="display: none;" class="fixed inset-0 z-50 bg-black flex flex-col justify-between p-4">
+    <div class="w-full flex justify-between items-center text-white pt-2 px-2 z-20"><span class="text-xs font-bold tracking-wider bg-black/60 px-3 py-1.5 rounded-full backdrop-blur-md">⚡️ Наведите камеру на штрихкод</span><button type="button" onclick="stopBarcodeScanner()" class="w-10 h-10 bg-white/20 active:bg-white/40 rounded-full flex items-center justify-center text-white font-bold text-lg backdrop-blur-md">✕</button></div>
+    <div class="relative w-full flex-1 flex items-center justify-center my-2 bg-neutral-900 rounded-3xl overflow-hidden"><div id="barcodeReader"></div></div>
+    <div class="w-full pb-4 flex justify-center z-20"><button type="button" onclick="openManualInput()" class="px-5 py-2.5 bg-white/20 text-white font-bold text-xs rounded-full backdrop-blur-md active:scale-95 transition">⌨️ Ввести цифры вручную</button></div>
+  </div>
+
   <!-- ОКНО КАМЕРЫ ДЛЯ ФОТО СОСТАВА -->
   <div id="cameraModal" style="display: none;" class="fixed inset-0 z-50 bg-black flex flex-col justify-between p-4">
-    <div class="w-full flex justify-between items-center text-white pt-2 px-2 z-20">
-      <span class="text-xs font-bold tracking-wider bg-black/60 px-3 py-1.5 rounded-full backdrop-blur-md">📸 Наведите на состав</span>
-      <button type="button" onclick="stopLiveCamera()" class="w-10 h-10 bg-white/20 active:bg-white/40 rounded-full flex items-center justify-center text-white font-bold text-lg backdrop-blur-md">✕</button>
-    </div>
-    <div class="relative w-full flex-1 flex items-center justify-center my-2 bg-neutral-900 rounded-2xl overflow-hidden">
-      <video id="cameraStream" playsinline autoplay muted class="w-full h-full object-cover"></video>
-      <div class="absolute inset-8 border-2 border-emerald-400/80 rounded-xl pointer-events-none"></div>
-    </div>
-    <div class="w-full pb-6 flex flex-col items-center space-y-3 z-20">
-      <button type="button" onclick="captureSnapshot()" class="w-20 h-20 rounded-full border-4 border-white flex items-center justify-center bg-white/20 active:scale-95 transition"><div class="w-16 h-16 bg-white rounded-full shadow-lg"></div></button>
-      <button type="button" onclick="fallbackToNativeCamera()" class="text-[11px] text-white/70 underline py-1">Открыть системную камеру</button>
-    </div>
+    <div class="w-full flex justify-between items-center text-white pt-2 px-2 z-20"><span class="text-xs font-bold tracking-wider bg-black/60 px-3 py-1.5 rounded-full backdrop-blur-md">📸 Наведите на состав</span><button type="button" onclick="stopLiveCamera()" class="w-10 h-10 bg-white/20 active:bg-white/40 rounded-full flex items-center justify-center text-white font-bold text-lg backdrop-blur-md">✕</button></div>
+    <div class="relative w-full flex-1 flex items-center justify-center my-2 bg-neutral-900 rounded-2xl overflow-hidden"><video id="cameraStream" playsinline autoplay muted class="w-full h-full object-cover"></video><div class="absolute inset-8 border-2 border-emerald-400/80 rounded-xl pointer-events-none"></div></div>
+    <div class="w-full pb-6 flex flex-col items-center space-y-3 z-20"><button type="button" onclick="captureSnapshot()" class="w-20 h-20 rounded-full border-4 border-white flex items-center justify-center bg-white/20 active:scale-95 transition"><div class="w-16 h-16 bg-white rounded-full shadow-lg"></div></button><button type="button" onclick="fallbackToNativeCamera()" class="text-[11px] text-white/70 underline py-1">Открыть системную камеру</button></div>
   </div>
 
   <!-- ШАПКА -->
   <header class="p-4 flex items-center justify-between border-b border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm sticky top-0 z-40">
-    <div class="flex items-center space-x-3">
-      <div id="userAvatar" class="w-10 h-10 rounded-full bg-emerald-500 text-white font-bold flex items-center justify-center text-sm shadow">U</div>
-      <div>
-        <h1 id="userName" class="text-sm font-bold leading-tight">Пользователь</h1>
-        <span id="limitBadge" class="inline-flex items-center text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-2.5 py-0.5 rounded-full mt-0.5">📊 Проверка лимитов...</span>
-      </div>
-    </div>
+    <div class="flex items-center space-x-3"><div id="userAvatar" class="w-10 h-10 rounded-full bg-emerald-500 text-white font-bold flex items-center justify-center text-sm shadow">U</div><div><h1 id="userName" class="text-sm font-bold leading-tight">Пользователь</h1><span id="limitBadge" class="inline-flex items-center text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-2.5 py-0.5 rounded-full mt-0.5">📊 Проверка лимитов...</span></div></div>
     <button type="button" onclick="showTab('pro')" class="px-3.5 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold rounded-full shadow hover:opacity-95 active:scale-95 transition">⭐️ PRO</button>
   </header>
 
   <!-- ВКЛАДКА 1: СКАНЕР -->
   <div id="tab-scanner" style="display: block;" class="p-4 max-w-md mx-auto w-full space-y-4">
-    
     <div class="bg-white dark:bg-slate-900 rounded-2xl p-3 shadow-sm border border-slate-200/60 dark:border-slate-800 space-y-2">
-      <div class="flex justify-between items-center px-1">
-        <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Кому сканируем:</span>
-        <button type="button" onclick="showTab('family')" class="text-[11px] text-emerald-500 font-bold hover:underline">+ Настроить семью</button>
-      </div>
+      <div class="flex justify-between items-center px-1"><span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Кому сканируем:</span><button type="button" onclick="showTab('family')" class="text-[11px] text-emerald-500 font-bold hover:underline">+ Настроить семью</button></div>
       <div id="scannerFamilyChips" class="flex items-center space-x-2 overflow-x-auto hide-scrollbar py-1"></div>
     </div>
 
     <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 text-center shadow-sm border border-slate-200/60 dark:border-slate-800 flex flex-col items-center justify-center space-y-4">
       <div class="w-16 h-16 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-500 rounded-full flex items-center justify-center text-3xl">🔍</div>
-      <div>
-        <h2 class="text-base font-bold">Проверка состава</h2>
-        <p id="scanningForLabel" class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold mt-0.5">Проверяем для: 👤 Я</p>
-      </div>
+      <div><h2 class="text-base font-bold">Проверка состава</h2><p id="scanningForLabel" class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold mt-0.5">Проверяем для: 👤 Я</p></div>
 
       <img id="photoPreview" style="display: none;" class="w-full max-h-56 object-contain rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm" />
 
       <div id="loader" style="display: none;" class="flex-col items-center py-3 space-y-2">
         <div class="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
-        <p id="loaderText" class="text-xs font-bold text-emerald-600 dark:text-emerald-400 animate-pulse">Ищу товар в базе...</p>
+        <p id="loaderText" class="text-xs font-bold text-emerald-600 dark:text-emerald-400 animate-pulse">Обработка...</p>
       </div>
 
       <input type="file" id="nativeCameraInput" accept="image/*" capture="camera" style="display: none;" onchange="processFilePhoto(event)">
       <input type="file" id="galleryInput" accept="image/*" style="display: none;" onchange="processFilePhoto(event)">
 
       <button type="button" onclick="startBarcodeScanner()" class="w-full py-4 bg-gradient-to-r from-emerald-500 to-teal-600 active:scale-95 text-white font-extrabold text-sm rounded-2xl shadow-lg shadow-emerald-500/25 flex items-center justify-center space-x-2 transition cursor-pointer">
-        <span class="text-xl">⚡️</span>
-        <span>Сканировать штрихкод / Честный ЗНАК</span>
+        <span class="text-xl">⚡️</span><span>Сканировать штрихкод / Честный ЗНАК</span>
       </button>
 
       <div class="grid grid-cols-2 gap-3 w-full pt-1">
@@ -161,28 +117,24 @@
       </div>
     </div>
 
-    <!-- КАРТОЧКА РЕЗУЛЬТАТА C ВИДНЫМ ДИСКЛЕЙМЕРОМ -->
+    <!-- КАРТОЧКА РЕЗУЛЬТАТА -->
     <div id="resultCard" style="display: none;" class="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-200/60 dark:border-slate-800 space-y-3.5">
       <div class="flex items-center justify-between border-b pb-2.5 border-slate-100 dark:border-slate-800">
-        <div>
-          <h3 id="productTitle" class="text-xs font-bold text-slate-400 uppercase tracking-wider">Вердикт безопасности</h3>
-          <div id="novaBadge" style="display: none;" class="mt-1"></div>
-        </div>
+        <div><h3 id="productTitle" class="text-xs font-bold text-slate-400 uppercase tracking-wider">Вердикт безопасности</h3><div id="novaBadge" style="display: none;" class="mt-1"></div></div>
         <span id="badgeVerdict" class="text-xs px-2.5 py-0.5 rounded-full font-bold"></span>
       </div>
+      
+      <!-- ВЫВОД ИИ ЧЕРЕЗ ИННЕР HTML (ЧТОБЫ РАБОТАЛИ ЖИРНЫЕ ШРИФТЫ B И АБЗАЦЫ) -->
+      <div id="resultText" class="text-xs space-y-2.5 leading-relaxed text-slate-800 dark:text-slate-200 font-medium pb-2"></div>
 
-      <div id="resultText" class="text-xs space-y-2 leading-relaxed text-slate-800 dark:text-slate-200 whitespace-pre-line font-medium"></div>
-
-      <!-- ВИДНЫЙ ДИСКЛЕЙМЕР ПОД КАЖДЫМ ВЕРДИКТОМ ДЛЯ ВАШЕЙ ЗАЩИТЫ -->
       <div class="pt-2.5 border-t border-slate-100 dark:border-slate-800 text-[10px] text-slate-400 dark:text-slate-500 leading-tight flex items-start gap-1.5">
         <span class="text-amber-500">⚠️</span>
-        <span>Носит справочно-рекомендательный характер. Не является медицинским диагнозом или консультацией врача. Всегда лично сверяйтесь с текстом на упаковке.</span>
+        <span>Носит справочно-рекомендательный характер. Не является медицинской консультацией.</span>
       </div>
 
       <div id="staleActionBlock" style="display: none;" class="pt-2 border-t border-slate-100 dark:border-slate-800">
         <button type="button" onclick="startLiveCamera()" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-90 text-white font-extrabold text-xs rounded-xl shadow-lg shadow-emerald-500/20 active:scale-95 transition flex items-center justify-center gap-2">
-          <span>📸</span>
-          <span>Сфотографировать состав этикетки</span>
+          <span>📸</span><span>Сфотографировать состав этикетки</span>
         </button>
       </div>
     </div>
@@ -201,22 +153,13 @@
     <!-- Редактор анкеты -->
     <div id="familyEditView" style="display: none;" class="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-200/60 dark:border-slate-800 space-y-4">
       <div class="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-slate-800">
-        <div class="flex items-center space-x-2">
-          <button type="button" onclick="closeEditMemberView()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 font-bold text-base">←</button>
-          <div>
-            <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Анкета для:</span>
-            <h2 id="currentEditingMemberTitle" class="text-sm font-black text-emerald-600">👤 Я</h2>
-          </div>
-        </div>
+        <div class="flex items-center space-x-2"><button type="button" onclick="closeEditMemberView()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 font-bold text-base">←</button><div><span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Анкета для:</span><h2 id="currentEditingMemberTitle" class="text-sm font-black text-emerald-600">👤 Я</h2></div></div>
         <button type="button" onclick="closeEditMemberView()" class="text-xs text-slate-400 hover:text-emerald-500 font-bold">К списку</button>
       </div>
 
       <div class="p-3 rounded-xl bg-emerald-50/50 border border-emerald-100 dark:border-emerald-900/40 flex items-center justify-between">
         <label class="text-xs font-bold text-slate-700 dark:text-slate-200">🎂 Возраст человека:</label>
-        <div class="flex items-center space-x-1.5">
-          <input type="number" id="txt_age" placeholder="25" min="0" max="110" class="w-16 text-center text-xs font-bold p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-          <span class="text-xs font-bold text-slate-500">лет</span>
-        </div>
+        <div class="flex items-center space-x-1.5"><input type="number" id="txt_age" placeholder="25" min="0" max="110" class="w-16 text-center text-xs font-bold p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700"><span class="text-xs font-bold text-slate-500">лет</span></div>
       </div>
 
       <div class="space-y-2">
@@ -245,76 +188,38 @@
 
       <div class="space-y-2 pt-2">
         <button type="button" id="btnSaveProfile" onclick="saveActiveMemberProfile()" class="w-full py-3.5 bg-emerald-500 text-white font-bold text-xs rounded-xl shadow active:scale-98 transition">💾 Сохранить в базу</button>
-        <div id="deleteMemberBtnContainer" style="display: none;">
-          <button type="button" onclick="removeMember(currentEditingMember)" class="w-full py-2.5 bg-red-50 hover:bg-red-100 text-red-600 font-bold text-xs rounded-xl border border-red-200 active:scale-95 transition">
-            🗑 Удалить этот профиль
-          </button>
-        </div>
+        <div id="deleteMemberBtnContainer" style="display: none;"><button type="button" onclick="removeMember(currentEditingMember)" class="w-full py-2.5 bg-red-50 hover:bg-red-100 text-red-600 font-bold text-xs rounded-xl border border-red-200 active:scale-95 transition">🗑 Удалить этот профиль</button></div>
       </div>
     </div>
   </div>
 
-  <!-- ВКЛАДКА 3: О ПРИЛОЖЕНИИ (ПОЛНОЕ ОБНОВЛЁННОЕ ОПИСАНИЕ С ХИМИЕЙ, КОСМЕТИКОЙ И ЗАЩИТОЙ) -->
+  <!-- ВКЛАДКА 3: О ПРИЛОЖЕНИИ -->
   <div id="tab-about" style="display: none;" class="p-4 max-w-md mx-auto w-full space-y-4">
     <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-200/60 dark:border-slate-800 space-y-4 text-xs leading-relaxed">
-      
       <div class="text-center pb-2 border-b border-slate-100 dark:border-slate-800">
         <span class="text-3xl">🛡️</span>
         <h2 class="text-base font-black mt-1 text-slate-900 dark:text-white">ЧтоВнутри? / Food & Eco Scanner</h2>
         <p class="text-slate-400 text-[11px]">Ваш персональный эксперт безопасности у магазинной полки</p>
       </div>
-
-      <!-- КЛЮЧЕВОЙ БЛОК: ПОЧЕМУ ФОТО — 100% ПРАВДА -->
       <div class="p-3.5 rounded-xl bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-200/60 dark:border-emerald-800/40 space-y-1.5">
-        <h3 class="font-black text-emerald-700 dark:text-emerald-300 text-xs flex items-center gap-1.5">
-          <span>📸</span> Почему фото состава — это 100% правда, а штрихкод может обмануть?
-        </h3>
+        <h3 class="font-black text-emerald-700 dark:text-emerald-300 text-xs flex items-center gap-1.5"><span>📸</span> Почему фото состава — это 100% правда, а штрихкод может обмануть?</h3>
         <p class="text-slate-700 dark:text-slate-300 text-[11px] leading-relaxed">
           Штрихкод на упаковке — это просто цифры в базах магазинов. Завод-изготовитель может в любой момент изменить рецептуру, заменить натуральные компоненты дешёвым заменителем или добавить консервант, <b>не меняя штрихкод</b>. Базы штрихкодов устаревают месяцами.<br>
           <b>Фотография этикетки гарантирует 100% правду прямо сейчас:</b> искусственный интеллект читает свежие буквы состава, напечатанные на конкретно этой пачке у вас в руках.
         </p>
       </div>
-
-      <!-- БЫТОВАЯ ХИМИЯ -->
       <div>
-        <h3 class="font-bold text-emerald-600 dark:text-emerald-400 text-xs mb-1 flex items-center gap-1">
-          <span>🧼</span> Бытовая химия: правда о детских порошках и средствах для дома
-        </h3>
-        <p class="text-slate-600 dark:text-slate-300 text-[11px]">
-          Маркетологи пишут «ЭКО» и «0+ Гипоаллергенно», но прячут внутри агрессивные анионные ПАВ, оптические отбеливатели и токсичные фосфаты, которые не выполаскиваются из ткани и вызывают аллергию у детей. ИИ проверит любой порошок или гель для стирки по составу за 2 секунды.
-        </p>
+        <h3 class="font-bold text-emerald-600 dark:text-emerald-400 text-xs mb-1 flex items-center gap-1"><span>🧼</span> Бытовая химия: правда о детских порошках</h3>
+        <p class="text-slate-600 dark:text-slate-300 text-[11px]">Маркетологи пишут «ЭКО» и «0+ Гипоаллергенно», но прячут внутри агрессивные анионные ПАВ, оптические отбеливатели и токсичные фосфаты, которые не выполаскиваются из ткани и вызывают аллергию у детей. ИИ проверит любой порошок или гель по составу.</p>
       </div>
-
-      <!-- КОСМЕТИКА И УХОД -->
       <div>
-        <h3 class="font-bold text-emerald-600 dark:text-emerald-400 text-xs mb-1 flex items-center gap-1">
-          <span>🧴</span> Косметика и гигиена: международный стандарт INCI
-        </h3>
-        <p class="text-slate-600 dark:text-slate-300 text-[11px]">
-          Шампуни, кремы и зубные пасты проверяются по токсикологическим реестрам: алгоритм мгновенно выявляет доноры формальдегида, разрушители гормональной системы (парабены), сульфаты (SLS) и комедогенные компоненты.
-        </p>
+        <h3 class="font-bold text-emerald-600 dark:text-emerald-400 text-xs mb-1 flex items-center gap-1"><span>🧴</span> Косметика и гигиена: международный стандарт INCI</h3>
+        <p class="text-slate-600 dark:text-slate-300 text-[11px]">Алгоритм мгновенно выявляет в шампунях и кремах доноры формальдегида, разрушители гормональной системы (парабены), сульфаты (SLS) и комедогенные компоненты.</p>
       </div>
-
-      <!-- ЧЕСТНЫЙ ЗНАК И NOVA -->
-      <div>
-        <h3 class="font-bold text-emerald-600 dark:text-emerald-400 text-xs mb-1 flex items-center gap-1">
-          <span>🏷</span> «Честный ЗНАК» и шкала ультрапереработки NOVA
-        </h3>
-        <p class="text-slate-600 dark:text-slate-300 text-[11px]">
-          Мгновенно распознает DataMatrix-коды маркировки на сырах, молоке и воде. Автоматически рассчитывает индекс переработки продуктов питания (NOVA 1–4) по классификации ВОЗ.
-        </p>
-      </div>
-
-      <!-- ВАЖНОЕ ПРАВОВОЕ УВЕДОМЛЕНИЕ (ОТКАЗ ОТ МЕДИЦИНСКОЙ ОТВЕТСТВЕННОСТИ) -->
       <div class="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-950 dark:text-amber-200 text-[11px] border border-amber-200/80 dark:border-amber-800/60 space-y-1">
-        <p class="font-black flex items-center gap-1.5 text-xs text-amber-800 dark:text-amber-300">
-          <span>⚠️</span> Важное правовое уведомление (Дисклеймер):
-        </p>
-        <p class="opacity-90 leading-relaxed text-[10px]">
-          Сервис «ЧтоВнутри?» оказывает исключительно <b>справочно-информационные и рекомендательные услуги</b>. Сервис не является медицинской организацией, не ставит медицинских диагнозов, не назначает лечение и не заменяет консультации врача-специалиста (аллерголога, терапевта, дерматолога, педиатра). Оценки строятся на базе открытых стандартов (ВОЗ, ТР ТС, INCI, EFSA). При наличии аллергий и заболеваний всегда лично сверяйтесь с текстом на упаковке.
-        </p>
+        <p class="font-black flex items-center gap-1.5 text-xs text-amber-800 dark:text-amber-300"><span>⚠️</span> Правовое уведомление (Дисклеймер):</p>
+        <p class="opacity-90 leading-relaxed text-[10px]">Сервис «ЧтоВнутри?» оказывает исключительно <b>справочно-информационные и рекомендательные услуги</b>. Не заменяет консультации врача. При наличии аллергий всегда лично сверяйтесь с текстом на упаковке.</p>
       </div>
-
     </div>
   </div>
 
@@ -324,22 +229,10 @@
       <div class="text-4xl">👑</div>
       <div><h2 class="text-lg font-black">PRO-безлимит</h2><p class="text-xs opacity-90 mt-1">Проверяйте составы для всей семьи без ограничений</p></div>
       <div class="space-y-2.5 text-left pt-2">
-        <button type="button" onclick="buyProPlan(30, 290)" class="w-full p-3.5 bg-white rounded-xl flex justify-between items-center text-xs font-bold text-slate-800 active:scale-95 transition shadow">
-          <span>1 месяц</span>
-          <span class="text-emerald-600 font-extrabold text-sm">290 ₽</span>
-        </button>
-        <button type="button" onclick="buyProPlan(60, 520)" class="w-full p-3.5 bg-white rounded-xl flex justify-between items-center text-xs font-bold text-slate-800 active:scale-95 transition shadow">
-          <span>2 месяца <span class="text-[10px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded">-10%</span></span>
-          <span class="text-emerald-600 font-extrabold text-sm">520 ₽</span>
-        </button>
-        <button type="button" onclick="buyProPlan(90, 740)" class="w-full p-3.5 bg-white rounded-xl flex justify-between items-center text-xs font-bold text-slate-800 active:scale-95 transition shadow">
-          <span>3 месяца <span class="text-[10px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded">-15%</span></span>
-          <span class="text-emerald-600 font-extrabold text-sm">740 ₽</span>
-        </button>
-        <button type="button" onclick="buyProPlan(180, 1290)" class="w-full p-3.5 bg-white rounded-xl flex justify-between items-center text-xs font-bold text-slate-800 border-2 border-yellow-300 active:scale-95 transition shadow">
-          <span>6 месяцев (Семья) <span class="text-[10px] bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded font-black">ХИТ -25%</span></span>
-          <span class="text-emerald-600 font-extrabold text-sm">1 290 ₽</span>
-        </button>
+        <button type="button" onclick="buyProPlan(30, 290)" class="w-full p-3.5 bg-white rounded-xl flex justify-between items-center text-xs font-bold text-slate-800 active:scale-95 transition shadow"><span>1 месяц</span><span class="text-emerald-600 font-extrabold text-sm">290 ₽</span></button>
+        <button type="button" onclick="buyProPlan(60, 520)" class="w-full p-3.5 bg-white rounded-xl flex justify-between items-center text-xs font-bold text-slate-800 active:scale-95 transition shadow"><span>2 месяца <span class="text-[10px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded">-10%</span></span><span class="text-emerald-600 font-extrabold text-sm">520 ₽</span></button>
+        <button type="button" onclick="buyProPlan(90, 740)" class="w-full p-3.5 bg-white rounded-xl flex justify-between items-center text-xs font-bold text-slate-800 active:scale-95 transition shadow"><span>3 месяца <span class="text-[10px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded">-15%</span></span><span class="text-emerald-600 font-extrabold text-sm">740 ₽</span></button>
+        <button type="button" onclick="buyProPlan(180, 1290)" class="w-full p-3.5 bg-white rounded-xl flex justify-between items-center text-xs font-bold text-slate-800 border-2 border-yellow-300 active:scale-95 transition shadow"><span>6 месяцев (Семья) <span class="text-[10px] bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded font-black">ХИТ -25%</span></span><span class="text-emerald-600 font-extrabold text-sm">1 290 ₽</span></button>
       </div>
     </div>
   </div>
@@ -383,10 +276,7 @@
       }, 1000);
     }
 
-    try {
-      if (tg) { tg.expand(); tg.ready(); }
-      if (maxBridge?.ready) { maxBridge.ready(); }
-    } catch(e) {}
+    try { if (tg) { tg.expand(); tg.ready(); } if (maxBridge?.ready) { maxBridge.ready(); } } catch(e) {}
 
     let currentStream = null;
     let html5QrScanner = null;
@@ -607,24 +497,20 @@
     function parseScannedCode(rawCode) {
       if (!rawCode) return "";
       let code = String(rawCode).trim().replace(/[\(\)]/g, '');
-      
       let gtinMatch = code.match(/01(\d{14})/);
       if (gtinMatch && gtinMatch[1]) {
         let gtin = gtinMatch[1];
         return gtin.startsWith("0") ? gtin.substring(1) : gtin;
       }
-      
       let digitsMatch = code.match(/\d{13,14}/);
       if (digitsMatch) {
         let num = digitsMatch[0];
         if (num.length === 14 && num.startsWith("0")) return num.substring(1);
         return num;
       }
-
       let cleanDigits = code.replace(/\D/g, '');
       if (cleanDigits.length === 13) return cleanDigits;
       if (cleanDigits.length === 14 && cleanDigits.startsWith("0")) return cleanDigits.substring(1);
-      
       return code;
     }
 
@@ -645,7 +531,10 @@
       } catch(e) { showResult("⚠️ Ошибка сети", "Сбой подключения к серверу."); }
     }
 
+    // ИСПРАВЛЕНО: СБРОС КЭША ШТРИХКОДА ПРИ ОТПРАВКЕ ФОТО!
     async function sendPhotoToN8n(base64Image) {
+      lastScannedBarcode = ""; // 100% ГАРАНТИЯ ЧТО N8N БУДЕТ ИСКАТЬ ПО ФОТО, А НЕ ПО СТАРОМУ КОДУ
+      
       document.getElementById('loaderText').innerText = "ИИ читает этикетку...";
       document.getElementById('loader').style.display = 'flex';
       document.getElementById('resultCard').style.display = 'none';
@@ -658,7 +547,7 @@
             chat_id: userId, 
             platform: platform,
             comment: buildHealthCommentForAI(),
-            barcode: lastScannedBarcode || null 
+            barcode: null 
           })
         });
         handleServerResponse(await res.json());
@@ -735,7 +624,10 @@
       badgeEl.className = badge.includes("ОПАСНО") ? "text-xs px-2.5 py-0.5 rounded-full font-bold bg-red-100 text-red-700" : (badge.includes("НЕЙТРАЛЬНО") || badge.includes("ОБНОВЛЕНИЯ") || badge.includes("НОВЫЙ") ? "text-xs px-2.5 py-0.5 rounded-full font-bold bg-amber-100 text-amber-700" : "text-xs px-2.5 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-700");
       
       document.getElementById('productTitle').innerText = title || ("Вердикт (" + (activeScannerTarget === "ALL" ? "Вся семья" : activeScannerTarget) + ")");
-      document.getElementById('resultText').innerText = text;
+      
+      // ИСПРАВЛЕНО: ТЕГИ HTML <b> РАБОТАЮТ БЕЗУПРЕЧНО!
+      // Заменяем переносы на <br> для абзацев и выводим как полноценный HTML
+      document.getElementById('resultText').innerHTML = text.replace(/\n/g, '<br>');
 
       let novaVal = nova;
       if (!novaVal && text.includes("NOVA 4")) novaVal = 4;
@@ -761,25 +653,22 @@
       const customerExtra = `${userId}_${days}`;
       const prodName = encodeURIComponent(`PRO-подписка (${days} дней)`);
       const payUrl = `https://foodscanner.payform.ru?do=pay&products[0][name]=${prodName}&products[0][price]=${priceRub}&products[0][quantity]=1&customer_extra=${encodeURIComponent(customerExtra)}`;
-      
       try {
-        if (isTelegramEnv && tg && typeof tg.openLink === 'function') {
-          tg.openLink(payUrl);
-          return;
-        }
+        if (isTelegramEnv && tg && typeof tg.openLink === 'function') { tg.openLink(payUrl); return; }
       } catch(e) {}
-
       try {
-        if (maxBridge && typeof maxBridge.openLink === 'function') {
-          maxBridge.openLink(payUrl);
-          return;
-        }
+        if (maxBridge && typeof maxBridge.openLink === 'function') { maxBridge.openLink(payUrl); return; }
       } catch(e) {}
-
       window.location.href = payUrl;
     }
 
+    // ИСПРАВЛЕННЫЙ ЗАПУСК СКАНЕРА ШТРИХКОДОВ ДЛЯ МАКСА И ТГ
     async function startBarcodeScanner() {
+      if (platform === 'max') {
+        document.getElementById('maxBarcodeNoticeModal').style.display = 'flex';
+        return;
+      }
+
       const modal = document.getElementById('barcodeModal');
       modal.style.display = 'flex';
 
@@ -803,64 +692,59 @@
             sendBarcodeToN8n(code);
           };
 
-          const qrboxFunction = function(viewfinderWidth, viewfinderHeight) {
-            let minEdge = Math.min(viewfinderWidth, viewfinderHeight);
-            let edge = Math.floor(minEdge * 0.75);
-            return { width: edge, height: Math.floor(edge * 0.65) };
+          const config = {
+            fps: 20,
+            qrbox: { width: 280, height: 180 }
           };
 
-          await html5QrScanner.start(
-            { facingMode: "environment" },
-            { fps: 20, qrbox: qrboxFunction },
-            onScanSuccess,
-            () => {}
-          );
-        } catch(e) {
+          let backCameraId = null;
           try {
-            await html5QrScanner.start(
-              {},
-              { fps: 20, qrbox: { width: 250, height: 160 } },
-              (code) => {
-                stopBarcodeScanner();
-                sendBarcodeToN8n(code);
-              },
-              () => {}
-            );
-          } catch(errDef) {
-            stopBarcodeScanner();
-            openManualInput();
+            const cameras = await Html5Qrcode.getCameras();
+            if (cameras && cameras.length > 0) {
+              const backCam = cameras.find(c => {
+                const l = (c.label || '').toLowerCase();
+                return l.includes('back') || l.includes('rear') || l.includes('environment') || l.includes('0');
+              });
+              backCameraId = backCam ? backCam.id : cameras[cameras.length - 1].id;
+            }
+          } catch(errCam) {}
+
+          if (backCameraId) {
+            await html5QrScanner.start(backCameraId, config, onScanSuccess, () => {});
+          } else {
+            try {
+              await html5QrScanner.start({ facingMode: "environment" }, config, onScanSuccess, () => {});
+            } catch(eEnv) {
+              await html5QrScanner.start({}, config, onScanSuccess, () => {});
+            }
           }
+        } catch(e) {
+          stopBarcodeScanner();
+          openManualInput();
         }
-      }, 100);
+      }, 150);
     }
 
     async function stopBarcodeScanner() {
-      if (html5QrScanner && html5QrScanner.isScanning) { 
-        try { await html5QrScanner.stop(); } catch(e){} 
-      }
+      if (html5QrScanner && html5QrScanner.isScanning) { try { await html5QrScanner.stop(); } catch(e){} }
       document.getElementById('barcodeModal').style.display = 'none';
     }
+
+    function closeMaxBarcodeModal() { document.getElementById('maxBarcodeNoticeModal').style.display = 'none'; }
+    function launchPhotoFromMaxModal() { closeMaxBarcodeModal(); startLiveCamera(); }
+    function switchToManualInputFromMax() { closeMaxBarcodeModal(); openManualInput(); }
 
     function openManualInput() {
       stopBarcodeScanner();
       document.getElementById('manualInputModal').style.display = 'flex';
-      setTimeout(() => {
-        const inp = document.getElementById('manualBarcodeInput');
-        if (inp) inp.focus();
-      }, 100);
+      setTimeout(() => { const inp = document.getElementById('manualBarcodeInput'); if (inp) inp.focus(); }, 100);
     }
 
-    function closeManualInputModal() {
-      document.getElementById('manualInputModal').style.display = 'none';
-    }
-
+    function closeManualInputModal() { document.getElementById('manualInputModal').style.display = 'none'; }
     function submitManualBarcode() {
       const val = document.getElementById('manualBarcodeInput').value.trim();
       closeManualInputModal();
-      if (val) {
-        sendBarcodeToN8n(val);
-        document.getElementById('manualBarcodeInput').value = '';
-      }
+      if (val) { sendBarcodeToN8n(val); document.getElementById('manualBarcodeInput').value = ''; }
     }
 
     async function startLiveCamera() {
@@ -874,25 +758,18 @@
     }
 
     function stopLiveCamera() {
-      if (currentStream) { 
-        currentStream.getTracks().forEach(t => t.stop()); 
-        currentStream = null; 
-      }
+      if (currentStream) { currentStream.getTracks().forEach(t => t.stop()); currentStream = null; }
       document.getElementById('cameraStream').srcObject = null;
       document.getElementById('cameraModal').style.display = 'none';
     }
 
-    function fallbackToNativeCamera() { 
-      stopLiveCamera(); 
-      document.getElementById('nativeCameraInput').click(); 
-    }
+    function fallbackToNativeCamera() { stopLiveCamera(); document.getElementById('nativeCameraInput').click(); }
 
     function captureSnapshot() {
       const v = document.getElementById('cameraStream'), c = document.createElement('canvas');
-      c.width = v.videoWidth || 1280; 
-      c.height = v.videoHeight || 720;
+      c.width = v.videoWidth || 1280; c.height = v.videoHeight || 720;
       c.getContext('2d').drawImage(v, 0, 0);
-      const data = c.toDataURL('image/jpeg', 0.85);
+      const data = c.toDataURL('image/jpeg', 0.80);
       stopLiveCamera();
       document.getElementById('photoPreview').src = data;
       document.getElementById('photoPreview').style.display = 'block';
@@ -901,10 +778,38 @@
 
     function triggerGallery() { document.getElementById('galleryInput').click(); }
 
+    // ИСПРАВЛЕНО: МОЩНОЕ СЖАТИЕ ФОТО ИЗ ГАЛЕРЕИ И ТЯЖЕЛЫХ ФОТО ДЛЯ MAX
     function processFilePhoto(e) {
       const f = e.target.files[0]; if (!f) return;
+      document.getElementById('loaderText').innerText = "Подготовка фото...";
+      document.getElementById('loader').style.display = 'flex';
+      document.getElementById('resultCard').style.display = 'none';
+
       const r = new FileReader();
-      r.onload = (ev) => sendPhotoToN8n(ev.target.result);
+      r.onload = (ev) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          const MAX_WIDTH = 1200;
+          const MAX_HEIGHT = 1200;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+          } else {
+            if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          const dataURL = canvas.toDataURL('image/jpeg', 0.80);
+          sendPhotoToN8n(dataURL);
+        };
+        img.src = ev.target.result;
+      };
       r.readAsDataURL(f);
     }
   </script>
