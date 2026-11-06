@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Food Scanner PRO</title>
+  <title>Food & Eco Scanner PRO</title>
   
   <script src="https://st.max.ru/js/max-web-app.js"></script>
   <script>
@@ -161,7 +161,7 @@
       </div>
     </div>
 
-    <!-- КАРТОЧКА РЕЗУЛЬТАТА -->
+    <!-- КАРТОЧКА РЕЗУЛЬТАТА C ВИДНЫМ ДИСКЛЕЙМЕРОМ -->
     <div id="resultCard" style="display: none;" class="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-200/60 dark:border-slate-800 space-y-3.5">
       <div class="flex items-center justify-between border-b pb-2.5 border-slate-100 dark:border-slate-800">
         <div>
@@ -172,6 +172,12 @@
       </div>
 
       <div id="resultText" class="text-xs space-y-2 leading-relaxed text-slate-800 dark:text-slate-200 whitespace-pre-line font-medium"></div>
+
+      <!-- ВИДНЫЙ ДИСКЛЕЙМЕР ПОД КАЖДЫМ ВЕРДИКТОМ ДЛЯ ВАШЕЙ ЗАЩИТЫ -->
+      <div class="pt-2.5 border-t border-slate-100 dark:border-slate-800 text-[10px] text-slate-400 dark:text-slate-500 leading-tight flex items-start gap-1.5">
+        <span class="text-amber-500">⚠️</span>
+        <span>Носит справочно-рекомендательный характер. Не является медицинским диагнозом или консультацией врача. Всегда лично сверяйтесь с текстом на упаковке.</span>
+      </div>
 
       <div id="staleActionBlock" style="display: none;" class="pt-2 border-t border-slate-100 dark:border-slate-800">
         <button type="button" onclick="startLiveCamera()" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-90 text-white font-extrabold text-xs rounded-xl shadow-lg shadow-emerald-500/20 active:scale-95 transition flex items-center justify-center gap-2">
@@ -248,29 +254,67 @@
     </div>
   </div>
 
-  <!-- ВКЛАДКА 3: О ПРИЛОЖЕНИИ -->
+  <!-- ВКЛАДКА 3: О ПРИЛОЖЕНИИ (ПОЛНОЕ ОБНОВЛЁННОЕ ОПИСАНИЕ С ХИМИЕЙ, КОСМЕТИКОЙ И ЗАЩИТОЙ) -->
   <div id="tab-about" style="display: none;" class="p-4 max-w-md mx-auto w-full space-y-4">
-    <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-200/60 space-y-4 text-xs leading-relaxed">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-200/60 dark:border-slate-800 space-y-4 text-xs leading-relaxed">
+      
       <div class="text-center pb-2 border-b border-slate-100 dark:border-slate-800">
         <span class="text-3xl">🛡️</span>
-        <h2 class="text-base font-black mt-1">О проекте Food Scanner</h2>
-        <p class="text-slate-400 text-[11px]">Эксперт по безопасности составов в супермаркете</p>
+        <h2 class="text-base font-black mt-1 text-slate-900 dark:text-white">ЧтоВнутри? / Food & Eco Scanner</h2>
+        <p class="text-slate-400 text-[11px]">Ваш персональный эксперт безопасности у магазинной полки</p>
       </div>
-      <div>
-        <h3 class="font-bold text-emerald-600 dark:text-emerald-400 text-sm mb-1">📸 Фото этикетки против штрихкода</h3>
-        <p class="text-slate-600 dark:text-slate-300">
-          Производители меняют состав без изменения штрихкода. Фото состава упаковки дает 100% гарантию актуальности.
+
+      <!-- КЛЮЧЕВОЙ БЛОК: ПОЧЕМУ ФОТО — 100% ПРАВДА -->
+      <div class="p-3.5 rounded-xl bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-200/60 dark:border-emerald-800/40 space-y-1.5">
+        <h3 class="font-black text-emerald-700 dark:text-emerald-300 text-xs flex items-center gap-1.5">
+          <span>📸</span> Почему фото состава — это 100% правда, а штрихкод может обмануть?
+        </h3>
+        <p class="text-slate-700 dark:text-slate-300 text-[11px] leading-relaxed">
+          Штрихкод на упаковке — это просто цифры в базах магазинов. Завод-изготовитель может в любой момент изменить рецептуру, заменить натуральные компоненты дешёвым заменителем или добавить консервант, <b>не меняя штрихкод</b>. Базы штрихкодов устаревают месяцами.<br>
+          <b>Фотография этикетки гарантирует 100% правду прямо сейчас:</b> искусственный интеллект читает свежие буквы состава, напечатанные на конкретно этой пачке у вас в руках.
         </p>
       </div>
+
+      <!-- БЫТОВАЯ ХИМИЯ -->
       <div>
-        <h3 class="font-bold text-emerald-600 dark:text-emerald-400 text-sm mb-1">🏷 Коды «Честный ЗНАК»</h3>
-        <p class="text-slate-600 dark:text-slate-300">
-          Сканер мгновенно распознает DataMatrix-коды на молочной продукции, воде и сырах.
+        <h3 class="font-bold text-emerald-600 dark:text-emerald-400 text-xs mb-1 flex items-center gap-1">
+          <span>🧼</span> Бытовая химия: правда о детских порошках и средствах для дома
+        </h3>
+        <p class="text-slate-600 dark:text-slate-300 text-[11px]">
+          Маркетологи пишут «ЭКО» и «0+ Гипоаллергенно», но прячут внутри агрессивные анионные ПАВ, оптические отбеливатели и токсичные фосфаты, которые не выполаскиваются из ткани и вызывают аллергию у детей. ИИ проверит любой порошок или гель для стирки по составу за 2 секунды.
         </p>
       </div>
-      <div class="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 text-[11px] border border-amber-200/60 dark:border-amber-800/50">
-        ⚠️ Сервис носит рекомендательный характер и не является медицинской консультацией.
+
+      <!-- КОСМЕТИКА И УХОД -->
+      <div>
+        <h3 class="font-bold text-emerald-600 dark:text-emerald-400 text-xs mb-1 flex items-center gap-1">
+          <span>🧴</span> Косметика и гигиена: международный стандарт INCI
+        </h3>
+        <p class="text-slate-600 dark:text-slate-300 text-[11px]">
+          Шампуни, кремы и зубные пасты проверяются по токсикологическим реестрам: алгоритм мгновенно выявляет доноры формальдегида, разрушители гормональной системы (парабены), сульфаты (SLS) и комедогенные компоненты.
+        </p>
       </div>
+
+      <!-- ЧЕСТНЫЙ ЗНАК И NOVA -->
+      <div>
+        <h3 class="font-bold text-emerald-600 dark:text-emerald-400 text-xs mb-1 flex items-center gap-1">
+          <span>🏷</span> «Честный ЗНАК» и шкала ультрапереработки NOVA
+        </h3>
+        <p class="text-slate-600 dark:text-slate-300 text-[11px]">
+          Мгновенно распознает DataMatrix-коды маркировки на сырах, молоке и воде. Автоматически рассчитывает индекс переработки продуктов питания (NOVA 1–4) по классификации ВОЗ.
+        </p>
+      </div>
+
+      <!-- ВАЖНОЕ ПРАВОВОЕ УВЕДОМЛЕНИЕ (ОТКАЗ ОТ МЕДИЦИНСКОЙ ОТВЕТСТВЕННОСТИ) -->
+      <div class="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-950 dark:text-amber-200 text-[11px] border border-amber-200/80 dark:border-amber-800/60 space-y-1">
+        <p class="font-black flex items-center gap-1.5 text-xs text-amber-800 dark:text-amber-300">
+          <span>⚠️</span> Важное правовое уведомление (Дисклеймер):
+        </p>
+        <p class="opacity-90 leading-relaxed text-[10px]">
+          Сервис «ЧтоВнутри?» оказывает исключительно <b>справочно-информационные и рекомендательные услуги</b>. Сервис не является медицинской организацией, не ставит медицинских диагнозов, не назначает лечение и не заменяет консультации врача-специалиста (аллерголога, терапевта, дерматолога, педиатра). Оценки строятся на базе открытых стандартов (ВОЗ, ТР ТС, INCI, EFSA). При наличии аллергий и заболеваний всегда лично сверяйтесь с текстом на упаковке.
+        </p>
+      </div>
+
     </div>
   </div>
 
@@ -735,7 +779,6 @@
       window.location.href = payUrl;
     }
 
-    // ИСПРАВЛЕННЫЙ СТАРТ: 1 ЗАПРОС ПРАВ, НЕТ ДВОЙНЫХ ДИАЛОГОВ, ВИДЕО НА ВЕСЬ ЭКРАН
     async function startBarcodeScanner() {
       const modal = document.getElementById('barcodeModal');
       modal.style.display = 'flex';
@@ -760,14 +803,12 @@
             sendBarcodeToN8n(code);
           };
 
-          // Динамический расчёт рамки точно по центру экрана
           const qrboxFunction = function(viewfinderWidth, viewfinderHeight) {
             let minEdge = Math.min(viewfinderWidth, viewfinderHeight);
             let edge = Math.floor(minEdge * 0.75);
             return { width: edge, height: Math.floor(edge * 0.65) };
           };
 
-          // Запуск камеры: один единственный запрос разрешения от браузера!
           await html5QrScanner.start(
             { facingMode: "environment" },
             { fps: 20, qrbox: qrboxFunction },
@@ -775,7 +816,6 @@
             () => {}
           );
         } catch(e) {
-          // Если environment не поддержался, пробуем дефолтную камеру
           try {
             await html5QrScanner.start(
               {},
