@@ -21,9 +21,20 @@
       color: var(--tg-theme-text-color, #0f172a);
       -webkit-tap-highlight-color: transparent;
     }
+    #barcodeReader {
+      width: 100% !important;
+      height: 100% !important;
+      position: relative;
+    }
     #barcodeReader video {
+      width: 100% !important;
+      height: 100% !important;
       object-fit: cover !important;
       border-radius: 1.5rem !important;
+    }
+    #barcodeReader__scan_region {
+      width: 100% !important;
+      height: 100% !important;
     }
     .hide-scrollbar::-webkit-scrollbar { display: none; }
     .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -53,33 +64,17 @@
     </div>
   </div>
 
-  <!-- МОДАЛЬНОЕ ОКНО ПОДСКАЗКИ СТРОГО ДЛЯ МАКСА -->
-  <div id="maxBarcodeNoticeModal" style="display: none;" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
-      <div class="flex justify-between items-center">
-        <span class="text-2xl">📸</span>
-        <button type="button" onclick="closeMaxBarcodeModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 font-bold">✕</button>
-      </div>
-      <div>
-        <h3 class="text-sm font-black text-slate-900 dark:text-white">Сканирование в MAX</h3>
-        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-          По техническим ограничениям платформы MAX живое видеосканирование полосок временно недоступно.
-        </p>
-      </div>
-      <div class="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/40">
-        <p class="text-xs font-bold text-emerald-700 dark:text-emerald-300">
-          💡 Сфотографируйте состав упаковки — наш ИИ разберёт его за 2 секунды прямо с этикетки!
-        </p>
-      </div>
-      <div class="space-y-2 pt-1">
-        <button type="button" onclick="launchPhotoFromMaxModal()" class="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-600 active:scale-95 text-white font-extrabold text-xs rounded-xl shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2 transition">
-          <span>📸</span>
-          <span>Сфотографировать состав</span>
-        </button>
-        <button type="button" onclick="switchToManualInputFromMax()" class="w-full py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold text-xs rounded-xl transition">
-          ⌨️ Ввести цифры штрихкода вручную
-        </button>
-      </div>
+  <!-- ОКНО СКАНЕРА ШТРИХКОДОВ -->
+  <div id="barcodeModal" style="display: none;" class="fixed inset-0 z-50 bg-black flex flex-col justify-between p-4">
+    <div class="w-full flex justify-between items-center text-white pt-2 px-2 z-20">
+      <span class="text-xs font-bold tracking-wider bg-black/60 px-3 py-1.5 rounded-full backdrop-blur-md">⚡️ Наведите камеру на штрихкод</span>
+      <button type="button" onclick="stopBarcodeScanner()" class="w-10 h-10 bg-white/20 active:bg-white/40 rounded-full flex items-center justify-center text-white font-bold text-lg backdrop-blur-md">✕</button>
+    </div>
+    <div class="relative w-full flex-1 flex items-center justify-center my-2 bg-neutral-900 rounded-3xl overflow-hidden">
+      <div id="barcodeReader"></div>
+    </div>
+    <div class="w-full pb-4 flex justify-center z-20">
+      <button type="button" onclick="openManualInput()" class="px-5 py-2.5 bg-white/20 text-white font-bold text-xs rounded-full backdrop-blur-md active:scale-95 transition">⌨️ Ввести цифры вручную</button>
     </div>
   </div>
 
@@ -96,20 +91,6 @@
         <button type="button" onclick="submitManualBarcode()" class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl shadow transition">🔍 Найти товар</button>
         <button type="button" onclick="closeManualInputModal()" class="w-full py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold text-xs rounded-xl transition">Отмена</button>
       </div>
-    </div>
-  </div>
-
-  <!-- ОКНО ЖИВОГО СКАНЕРА ШТРИХКОДОВ (ДЛЯ ТЕЛЕГРАМА И ВЕБА) -->
-  <div id="barcodeModal" style="display: none;" class="fixed inset-0 z-50 bg-black flex flex-col justify-between p-4">
-    <div class="w-full flex justify-between items-center text-white pt-2 px-2 z-20">
-      <span class="text-xs font-bold tracking-wider bg-black/60 px-3 py-1.5 rounded-full backdrop-blur-md">⚡️ Наведите камеру на штрихкод</span>
-      <button type="button" onclick="stopBarcodeScanner()" class="w-10 h-10 bg-white/20 active:bg-white/40 rounded-full flex items-center justify-center text-white font-bold text-lg backdrop-blur-md">✕</button>
-    </div>
-    <div class="relative w-full flex-1 flex items-center justify-center my-2 bg-neutral-900 rounded-3xl overflow-hidden">
-      <div id="barcodeReader" class="w-full h-full"></div>
-    </div>
-    <div class="w-full pb-4 flex justify-center z-20">
-      <button type="button" onclick="openManualInput()" class="px-5 py-2.5 bg-white/20 text-white font-bold text-xs rounded-full backdrop-blur-md active:scale-95 transition">⌨️ Ввести цифры вручную</button>
     </div>
   </div>
 
@@ -754,15 +735,8 @@
       window.location.href = payUrl;
     }
 
-    // ЛОГИКА ЗАПУСКА: СТРОГОЕ РАЗДЕЛЕНИЕ МАКСА И ТЕЛЕГРАМА
+    // ИСПРАВЛЕННЫЙ СТАРТ: 1 ЗАПРОС ПРАВ, НЕТ ДВОЙНЫХ ДИАЛОГОВ, ВИДЕО НА ВЕСЬ ЭКРАН
     async function startBarcodeScanner() {
-      // 1. ЕСЛИ ПОЛЬЗОВАТЕЛЬ В МАКСЕ — ПОКАЗЫВАЕМ АККУРАТНУЮ ПОДСКАЗКУ С КНОПКОЙ ФОТО
-      if (platform === 'max') {
-        document.getElementById('maxBarcodeNoticeModal').style.display = 'flex';
-        return;
-      }
-
-      // 2. ДЛЯ ТЕЛЕГРАМА И ВЕБА — ЧИСТЫЙ ЖИВОЙ АВТОЗАХВАТ НА ЛЕТУ
       const modal = document.getElementById('barcodeModal');
       modal.style.display = 'flex';
 
@@ -786,36 +760,36 @@
             sendBarcodeToN8n(code);
           };
 
-          const config = {
-            fps: 20,
-            qrbox: { width: 280, height: 180 },
-            aspectRatio: 1.0
+          // Динамический расчёт рамки точно по центру экрана
+          const qrboxFunction = function(viewfinderWidth, viewfinderHeight) {
+            let minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+            let edge = Math.floor(minEdge * 0.75);
+            return { width: edge, height: Math.floor(edge * 0.65) };
           };
 
-          let backCameraId = null;
-          try {
-            const cameras = await Html5Qrcode.getCameras();
-            if (cameras && cameras.length > 0) {
-              const backCam = cameras.find(c => {
-                const l = (c.label || '').toLowerCase();
-                return l.includes('back') || l.includes('rear') || l.includes('environment') || l.includes('0');
-              });
-              backCameraId = backCam ? backCam.id : cameras[cameras.length - 1].id;
-            }
-          } catch(errCam) {}
-
-          if (backCameraId) {
-            await html5QrScanner.start(backCameraId, config, onScanSuccess, () => {});
-          } else {
-            try {
-              await html5QrScanner.start({ facingMode: "environment" }, config, onScanSuccess, () => {});
-            } catch(eEnv) {
-              await html5QrScanner.start({}, config, onScanSuccess, () => {});
-            }
-          }
+          // Запуск камеры: один единственный запрос разрешения от браузера!
+          await html5QrScanner.start(
+            { facingMode: "environment" },
+            { fps: 20, qrbox: qrboxFunction },
+            onScanSuccess,
+            () => {}
+          );
         } catch(e) {
-          stopBarcodeScanner();
-          openManualInput();
+          // Если environment не поддержался, пробуем дефолтную камеру
+          try {
+            await html5QrScanner.start(
+              {},
+              { fps: 20, qrbox: { width: 250, height: 160 } },
+              (code) => {
+                stopBarcodeScanner();
+                sendBarcodeToN8n(code);
+              },
+              () => {}
+            );
+          } catch(errDef) {
+            stopBarcodeScanner();
+            openManualInput();
+          }
         }
       }, 100);
     }
@@ -825,21 +799,6 @@
         try { await html5QrScanner.stop(); } catch(e){} 
       }
       document.getElementById('barcodeModal').style.display = 'none';
-    }
-
-    // ХЕЛПЕРЫ ДЛЯ МОДАЛКИ МАКСА
-    function closeMaxBarcodeModal() {
-      document.getElementById('maxBarcodeNoticeModal').style.display = 'none';
-    }
-
-    function launchPhotoFromMaxModal() {
-      closeMaxBarcodeModal();
-      startLiveCamera();
-    }
-
-    function switchToManualInputFromMax() {
-      closeMaxBarcodeModal();
-      openManualInput();
     }
 
     function openManualInput() {
